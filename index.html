@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Formularz wynajmu sprzętu górskiego">
     <title>Formularz wynajmu sprzętu</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -102,12 +103,22 @@
                         </div>
                         <div class="form-group">
                             <label for="pickupHour">Godzina odbioru *</label>
-                            <input
-                                type="time"
-                                id="pickupHour"
-                                name="pickupHour"
-                                required
-                                aria-required="true">
+                            <div class="input-with-spinner">
+                                <input
+                                    type="time"
+                                    id="pickupHour"
+                                    name="pickupHour"
+                                    required
+                                    aria-required="true">
+                                <div class="spinner-buttons">
+                                    <button type="button" class="spinner-btn spinner-up" aria-label="Zwiększ godzinę" tabindex="-1">
+                                        <span aria-hidden="true">▲</span>
+                                    </button>
+                                    <button type="button" class="spinner-btn spinner-down" aria-label="Zmniejsz godzinę" tabindex="-1">
+                                        <span aria-hidden="true">▼</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <h3>Zwrot</h3>
@@ -123,12 +134,22 @@
                         </div>
                         <div class="form-group">
                             <label for="returnHour">Godzina zwrotu *</label>
-                            <input
-                                type="time"
-                                id="returnHour"
-                                name="returnHour"
-                                required
-                                aria-required="true">
+                            <div class="input-with-spinner">
+                                <input
+                                    type="time"
+                                    id="returnHour"
+                                    name="returnHour"
+                                    required
+                                    aria-required="true">
+                                <div class="spinner-buttons">
+                                    <button type="button" class="spinner-btn spinner-up" aria-label="Zwiększ godzinę" tabindex="-1">
+                                        <span aria-hidden="true">▲</span>
+                                    </button>
+                                    <button type="button" class="spinner-btn spinner-down" aria-label="Zmniejsz godzinę" tabindex="-1">
+                                        <span aria-hidden="true">▼</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -156,6 +177,14 @@
                     <button type="submit" id="submitBtn">Wyślij</button>
                 </div>
             </form>
+            
+            <!-- Success Page (hidden by default) -->
+            <div id="successPage" class="success-page hidden">
+                <div class="success-content">
+                    <h2>Formularz wysłany pomyślnie</h2>
+                    <p>Formularz wysłany pomyślnie. Prosimy czekać na wiadomość z potwierdzeniem rezerwacji.</p>
+                </div>
+            </div>
         </main>
         
         <footer>

@@ -276,6 +276,81 @@ input[type="number"] {
 }
 
 /* ========================================
+   Input with Spinner Buttons
+   ======================================== */
+.input-with-spinner {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-spinner input {
+    padding-right: 2.5rem;
+}
+
+.spinner-buttons {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    width: 2rem;
+    border-left: 1px solid var(--color-border);
+}
+
+.spinner-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-surface);
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    user-select: none;
+}
+
+.spinner-btn:last-child {
+    border-bottom: none;
+}
+
+.spinner-btn:hover {
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+.spinner-btn:active {
+    background-color: var(--color-border);
+}
+
+.spinner-btn:focus {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: -2px;
+}
+
+.spinner-btn span {
+    line-height: 1;
+}
+
+/* Spinner buttons in table cells */
+.col-quantity .input-with-spinner {
+    width: 100%;
+}
+
+.col-quantity .spinner-buttons {
+    width: 1.75rem;
+}
+
+.col-quantity .input-with-spinner input {
+    padding-right: 2.25rem;
+}
+
+/* ========================================
    Equipment Section 
    ======================================== */
 .equipment-section {
@@ -292,7 +367,7 @@ input[type="number"] {
 /* Equipment Table - CSS Grid Layout */
 .equipment-table {
     display: grid;
-    grid-template-columns: 2fr 1fr 2fr;
+    grid-template-columns: 2fr 1.5fr 1fr;
     width: 100%;
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius-sm);
@@ -428,6 +503,35 @@ button[type="submit"]:disabled {
 }
 
 /* ========================================
+   Success Page
+   ======================================== */
+.success-page {
+    background-color: var(--color-surface);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-2xl);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    text-align: center;
+}
+
+.success-page.hidden {
+    display: none;
+}
+
+.success-content h2 {
+    color: var(--color-success);
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-lg);
+    margin-top: 0;
+}
+
+.success-content p {
+    font-size: var(--font-size-lg);
+    color: var(--color-text);
+    line-height: var(--line-height-base);
+    margin: 0;
+}
+
+/* ========================================
    Footer 
    ======================================== */
 footer {
@@ -466,7 +570,7 @@ footer {
     
     /* Stack equipment table on very small screens */
     .equipment-table {
-        grid-template-columns: 1.5fr 0.8fr 1.7fr;
+        grid-template-columns: 1.5fr 1.2fr 1fr;
     }
     
     .equipment-row > div {
@@ -484,12 +588,24 @@ footer {
         width: 100%;
         padding: var(--spacing-md) var(--spacing-lg);
     }
+    
+    .success-page {
+        padding: var(--spacing-xl);
+    }
+    
+    .success-content h2 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .success-content p {
+        font-size: var(--font-size-base);
+    }
 }
 
 /* Medium screens (tablets) */
 @media (min-width: 481px) and (max-width: 768px) {
     .equipment-table {
-        grid-template-columns: 2fr 1fr 2.5fr;
+        grid-template-columns: 2fr 1.5fr 1.5fr;
     }
 }
 

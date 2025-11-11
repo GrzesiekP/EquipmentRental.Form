@@ -12,6 +12,7 @@ if (typeof SETTINGS === 'undefined') {
 let form;
 let submitBtn;
 let feedbackMessage;
+let successPage;
 
 /**
  * Generate equipment rows dynamically
@@ -31,14 +32,24 @@ function generateEquipmentRows() {
             <div class="col-equipment" role="cell">${item}</div>
             <div class="col-quantity" role="cell">
                 <label for="quantity-${itemId}" class="sr-only">Ilość - ${item}</label>
-                <input
-                    type="number"
-                    id="quantity-${itemId}"
-                    name="quantity-${itemId}"
-                    min="0"
-                    step="1"
-                    value="0"
-                    aria-label="Ilość - ${item}">
+                <div class="input-with-spinner">
+                    <input
+                        type="number"
+                        id="quantity-${itemId}"
+                        name="quantity-${itemId}"
+                        min="0"
+                        step="1"
+                        value="0"
+                        aria-label="Ilość - ${item}">
+                    <div class="spinner-buttons">
+                        <button type="button" class="spinner-btn spinner-up" aria-label="Zwiększ ilość" tabindex="-1">
+                            <span aria-hidden="true">▲</span>
+                        </button>
+                        <button type="button" class="spinner-btn spinner-down" aria-label="Zmniejsz ilość" tabindex="-1">
+                            <span aria-hidden="true">▼</span>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="col-notes" role="cell">
                 <label for="notes-${itemId}" class="sr-only">Uwagi - ${item}</label>
@@ -55,6 +66,99 @@ function generateEquipmentRows() {
 }
 
 /**
+ * Set up spinner button handlers for inputs
+ */
+function setupSpinnerHandlers() {
+    // Handle quantity inputs
+    document.querySelectorAll('.col-quantity .spinner-up').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.closest('.input-with-spinner').querySelector('input[type="number"]');
+            if (input) {
+                input.stepUp();
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
+    });
+
+    document.querySelectorAll('.col-quantity .spinner-down').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.closest('.input-with-spinner').querySelector('input[type="number"]');
+            if (input) {
+                input.stepDown();
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
+    });
+
+    // Handle time inputs
+    document.querySelectorAll('input[type="time"]').forEach(input => {
+        const spinnerContainer = input.closest('.input-with-spinner');
+        if (!spinnerContainer) return;
+
+        const upBtn = spinnerContainer.querySelector('.spinner-up');
+        const downBtn = spinnerContainer.querySelector('.spinner-down');
+
+        if (upBtn) {
+            upBtn.addEventListener('click', function() {
+                incrementTime(input);
+            });
+        }
+
+        if (downBtn) {
+            downBtn.addEventListener('click', function() {
+                decrementTime(input);
+            });
+        }
+    });
+}
+
+/**
+ * Increment time input by 15 minutes
+ * @param {HTMLInputElement} timeInput - The time input element
+ */
+function incrementTime(timeInput) {
+    if (!timeInput.value) {
+        timeInput.value = '00:00';
+        return;
+    }
+
+    const [hours, minutes] = timeInput.value.split(':').map(Number);
+    let newMinutes = minutes + 15;
+    let newHours = hours;
+
+    if (newMinutes >= 60) {
+        newMinutes = 0;
+        newHours = (newHours + 1) % 24;
+    }
+
+    timeInput.value = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+    timeInput.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+/**
+ * Decrement time input by 15 minutes
+ * @param {HTMLInputElement} timeInput - The time input element
+ */
+function decrementTime(timeInput) {
+    if (!timeInput.value) {
+        timeInput.value = '00:00';
+        return;
+    }
+
+    const [hours, minutes] = timeInput.value.split(':').map(Number);
+    let newMinutes = minutes - 15;
+    let newHours = hours;
+
+    if (newMinutes < 0) {
+        newMinutes = 45;
+        newHours = (newHours - 1 + 24) % 24;
+    }
+
+    timeInput.value = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+    timeInput.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+/**
  * Initialize the application
  * Sets up event listeners and DOM references
  */
@@ -63,12 +167,16 @@ function init() {
     form = document.getElementById('equipmentForm');
     submitBtn = document.getElementById('submitBtn');
     feedbackMessage = document.getElementById('feedbackMessage');
+    successPage = document.getElementById('successPage');
 
     // Generate equipment rows dynamically
     generateEquipmentRows();
 
     // Set default values for date and time fields
     setDefaultValues();
+
+    // Set up spinner button handlers
+    setupSpinnerHandlers();
 
     // Set up event listeners
     if (form) {
@@ -369,6 +477,43 @@ function hideFeedback() {
 }
 
 /**
+ * Show the success page
+ */
+function showSuccessPage() {
+    if (!successPage || !form) return;
+    
+    // Hide the form and intro text
+    form.style.display = 'none';
+    const introText = document.querySelector('.intro-text');
+    if (introText) {
+        introText.style.display = 'none';
+    }
+    
+    // Show the success page
+    successPage.classList.remove('hidden');
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * Hide the success page
+ */
+function hideSuccessPage() {
+    if (!successPage || !form) return;
+    
+    // Show the form and intro text
+    form.style.display = '';
+    const introText = document.querySelector('.intro-text');
+    if (introText) {
+        introText.style.display = '';
+    }
+    
+    // Hide the success page
+    successPage.classList.add('hidden');
+}
+
+/**
  * Set loading state on the submit button
  * @param {boolean} isLoading - Whether the form is in loading state
  */
@@ -405,6 +550,7 @@ async function submitToWebhook(data) {
 
         return {
             success: true,
+            status: response.status,
             data: await response.json().catch(() => ({}))
         };
     } catch (error) {
@@ -461,7 +607,11 @@ async function handleFormSubmit(event) {
     setLoadingState(false);
 
     // Handle result
-    if (result.success) {
+    if (result.success && result.status === 200) {
+        // Show success page for 200 status
+        showSuccessPage();
+    } else if (result.success) {
+        // Other success statuses - show feedback message
         showFeedback('Formularz został wysłany pomyślnie!', 'success');
         
         // Reset form after successful submission
