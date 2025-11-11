@@ -3,7 +3,7 @@
 // ====================================
 
 const SETTINGS = {
-    webhookUrl: 'https://tantunergon8n.duckdns.org/webhook-test/submit-reservation',
+    webhookUrl: 'https://tantunergon8n.duckdns.org/webhook/submit-reservation',
     equipmentItems: [
         'Raki Koszykowe',
         'Czekan',
