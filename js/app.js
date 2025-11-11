@@ -482,6 +482,9 @@ function hideFeedback() {
 function showSuccessPage() {
     if (!successPage || !form) return;
     
+    // Hide feedback message
+    hideFeedback();
+    
     // Hide the form and intro text
     form.style.display = 'none';
     const introText = document.querySelector('.intro-text');
@@ -514,7 +517,7 @@ function hideSuccessPage() {
 }
 
 /**
- * Set loading state on the submit button
+ * Set loading state on the submit button and all form inputs
  * @param {boolean} isLoading - Whether the form is in loading state
  */
 function setLoadingState(isLoading) {
@@ -527,6 +530,22 @@ function setLoadingState(isLoading) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Wyślij';
     }
+
+    if (!form) return;
+
+    // Disable/enable all form inputs
+    const allInputs = form.querySelectorAll('input, textarea, select, button');
+    allInputs.forEach(input => {
+        if (input !== submitBtn) {
+            input.disabled = isLoading;
+        }
+    });
+
+    // Disable/enable spinner buttons
+    const spinnerButtons = form.querySelectorAll('.spinner-btn');
+    spinnerButtons.forEach(btn => {
+        btn.disabled = isLoading;
+    });
 }
 
 /**
@@ -607,18 +626,9 @@ async function handleFormSubmit(event) {
     setLoadingState(false);
 
     // Handle result
-    if (result.success && result.status === 200) {
-        // Show success page for 200 status
+    if (result.success && result.status >= 200 && result.status < 300) {
+        // Show success page for all success statuses (200-299)
         showSuccessPage();
-    } else if (result.success) {
-        // Other success statuses - show feedback message
-        showFeedback('Formularz został wysłany pomyślnie!', 'success');
-        
-        // Reset form after successful submission
-        setTimeout(() => {
-            resetForm();
-            hideFeedback();
-        }, 3000);
     } else {
         showFeedback(
             'Wystąpił błąd podczas wysyłania formularza. Spróbuj ponownie.',
