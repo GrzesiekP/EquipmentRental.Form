@@ -29,6 +29,47 @@ let submitBtn;
 let feedbackMessage;
 
 /**
+ * Generate equipment rows dynamically
+ */
+function generateEquipmentRows() {
+    const equipmentTable = document.getElementById('equipmentTable');
+    if (!equipmentTable) return;
+
+    EQUIPMENT_ITEMS.forEach(item => {
+        const itemId = equipmentNameToId(item);
+        const row = document.createElement('div');
+        row.className = 'equipment-row';
+        row.setAttribute('data-equipment', item);
+        row.setAttribute('role', 'row');
+
+        row.innerHTML = `
+            <div class="col-equipment" role="cell">${item}</div>
+            <div class="col-quantity" role="cell">
+                <label for="quantity-${itemId}" class="sr-only">Ilość - ${item}</label>
+                <input
+                    type="number"
+                    id="quantity-${itemId}"
+                    name="quantity-${itemId}"
+                    min="0"
+                    step="1"
+                    value="0"
+                    aria-label="Ilość - ${item}">
+            </div>
+            <div class="col-notes" role="cell">
+                <label for="notes-${itemId}" class="sr-only">Uwagi - ${item}</label>
+                <input
+                    type="text"
+                    id="notes-${itemId}"
+                    name="notes-${itemId}"
+                    aria-label="Uwagi - ${item}">
+            </div>
+        `;
+
+        equipmentTable.appendChild(row);
+    });
+}
+
+/**
  * Initialize the application
  * Sets up event listeners and DOM references
  */
@@ -37,6 +78,9 @@ function init() {
     form = document.getElementById('equipmentForm');
     submitBtn = document.getElementById('submitBtn');
     feedbackMessage = document.getElementById('feedbackMessage');
+
+    // Generate equipment rows dynamically
+    generateEquipmentRows();
 
     // Set up event listeners
     if (form) {
@@ -204,21 +248,36 @@ function validateForm(data) {
         };
     }
     
-    // CRITICAL: Validate dates BEFORE time validation
-    // This ensures users see date errors even if times aren't filled
-    if (data.pickupDate && data.returnDate) {
-        const pickup = new Date(data.pickupDate);
-        const returnD = new Date(data.returnDate);
-        console.log('🔍 DEBUG: Date validation - Pickup:', pickup, 'Return:', returnD);
-        console.log('🔍 DEBUG: Is return < pickup?', returnD < pickup);
-        
-        if (returnD < pickup) {
-            console.log('🔍 DEBUG: Date validation FAILED - returning error');
-            return {
-                isValid: false,
-                message: 'Data zwrotu musi być równa lub późniejsza od daty odbioru'
-            };
-        }
+    // Validate dates are not in the past
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const pickup = new Date(data.pickupDate);
+    pickup.setHours(0, 0, 0, 0);
+    
+    if (pickup < today) {
+        return {
+            isValid: false,
+            message: 'Data odbioru nie może być w przeszłości'
+        };
+    }
+    
+    const returnD = new Date(data.returnDate);
+    returnD.setHours(0, 0, 0, 0);
+    
+    if (returnD < today) {
+        return {
+            isValid: false,
+            message: 'Data zwrotu nie może być w przeszłości'
+        };
+    }
+    
+    // Validate return date is not before pickup date
+    if (returnD < pickup) {
+        return {
+            isValid: false,
+            message: 'Data zwrotu musi być równa lub późniejsza od daty odbioru'
+        };
     }
     
     // Validate time fields AFTER date validation
@@ -346,24 +405,23 @@ function resetForm() {
  */
 async function handleFormSubmit(event) {
     event.preventDefault();
-    console.log('🔍 DEBUG: handleFormSubmit called');
 
     // Hide any existing feedback
     hideFeedback();
 
     // Collect form data
     const formData = collectFormData();
-    console.log('🔍 DEBUG: Form data collected:', formData);
 
     // Validate the data
     const validation = validateForm(formData);
-    console.log('🔍 DEBUG: Validation result:', validation);
     if (!validation.isValid) {
-        console.log('🔍 DEBUG: Validation failed, showing error:', validation.message);
         showFeedback(validation.message, 'error');
         return;
     }
 
+    // Webhook is not yet working - skip submission
+    // TODO: Enable webhook submission when ready
+    /*
     // Set loading state
     setLoadingState(true);
 
@@ -388,6 +446,16 @@ async function handleFormSubmit(event) {
             'error'
         );
     }
+    */
+    
+    // For now, just show success message (webhook disabled)
+    showFeedback('Formularz został zweryfikowany pomyślnie! (Webhook wyłączony)', 'success');
+    
+    // Reset form after showing message
+    setTimeout(() => {
+        resetForm();
+        hideFeedback();
+    }, 3000);
 }
 
 // Initialize the application when DOM is ready
