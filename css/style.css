@@ -113,6 +113,14 @@ h2 {
     margin-top: var(--spacing-lg);
 }
 
+h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
 section h2:first-child {
     margin-top: 0;
 }
@@ -128,6 +136,40 @@ label {
 /* ========================================
    Form Elements 
    ======================================== */
+.intro-text {
+    background-color: var(--color-surface);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    margin-bottom: var(--spacing-xl);
+}
+
+.intro-text p {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text);
+}
+
+.intro-text p:last-child {
+    margin-bottom: 0;
+}
+
+.intro-text a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color var(--transition-speed);
+}
+
+.intro-text a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+.intro-text a:focus {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-sm);
+}
+
 #equipmentForm {
     background-color: var(--color-surface);
     border-radius: var(--border-radius);
@@ -230,6 +272,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 /* ========================================
@@ -239,12 +282,22 @@ input[type="number"] {
     margin-bottom: var(--spacing-xl);
 }
 
+.equipment-instructions {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-base);
+}
+
 /* Equipment Table - CSS Grid Layout */
 .equipment-table {
     display: grid;
     grid-template-columns: 2fr 1fr 2fr;
-    gap: var(--spacing-sm);
     width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    background-color: var(--color-surface);
 }
 
 .equipment-row {
@@ -253,8 +306,17 @@ input[type="number"] {
 
 .equipment-row > div {
     padding: var(--spacing-md);
-    border: 1px solid var(--color-border);
     background-color: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.equipment-row > div:last-child {
+    border-right: none;
+}
+
+.equipment-row:last-child > div {
+    border-bottom: none;
 }
 
 /* Header row styling */
@@ -265,16 +327,11 @@ input[type="number"] {
     font-size: var(--font-size-sm);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--color-primary-dark);
 }
 
-/* First column in header row */
-.equipment-row.header .col-equipment {
-    border-top-left-radius: var(--border-radius-sm);
-}
-
-/* Last column in header row */
-.equipment-row.header .col-notes {
-    border-top-right-radius: var(--border-radius-sm);
+.equipment-row.header > div:last-child {
+    border-right: none;
 }
 
 /* Equipment name column */
@@ -296,15 +353,7 @@ input[type="number"] {
 .col-notes input {
     margin: 0;
     padding: var(--spacing-xs) var(--spacing-sm);
-}
-
-/* Last row bottom corners */
-.equipment-row:last-child .col-equipment {
-    border-bottom-left-radius: var(--border-radius-sm);
-}
-
-.equipment-row:last-child .col-notes {
-    border-bottom-right-radius: var(--border-radius-sm);
+    width: 100%;
 }
 
 /* ========================================
@@ -418,7 +467,6 @@ footer {
     /* Stack equipment table on very small screens */
     .equipment-table {
         grid-template-columns: 1.5fr 0.8fr 1.7fr;
-        gap: var(--spacing-xs);
     }
     
     .equipment-row > div {

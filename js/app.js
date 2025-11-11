@@ -2,26 +2,11 @@
 // Equipment Rental Form - JavaScript
 // ====================================
 
-// Constants
-const WEBHOOK_URL = 'https://tantunergon8n.duckdns.org/webhook-test/d3f86dbd-05be-45c2-ba6d-e73c2ee4e244';
-const EQUIPMENT_ITEMS = [
-    'Raki Koszykowe',
-    'Czekan',
-    'Raki Półautomatyczne',
-    'Kijki Trekkingowe',
-    'ABC Lawinowe',
-    'Łopata Lawinowa',
-    'Detektor Lawinowy',
-    'Sonda Lawinowa',
-    'Zestaw Via Ferrata',
-    'Kask',
-    'Lonża Via Ferrata',
-    'Uprząż',
-    'Stuptuty',
-    'Nosidełko Turystyczne dla Dzieci',
-    'Raczki Turystyczne',
-    'Plecak'
-];
+// Settings are loaded from js/settings.js
+// Ensure SETTINGS object is available before using
+if (typeof SETTINGS === 'undefined') {
+    throw new Error('SETTINGS object is not defined. Make sure js/settings.js is loaded before app.js');
+}
 
 // DOM Element References
 let form;
@@ -35,7 +20,7 @@ function generateEquipmentRows() {
     const equipmentTable = document.getElementById('equipmentTable');
     if (!equipmentTable) return;
 
-    EQUIPMENT_ITEMS.forEach(item => {
+    SETTINGS.equipmentItems.forEach(item => {
         const itemId = equipmentNameToId(item);
         const row = document.createElement('div');
         row.className = 'equipment-row';
@@ -82,6 +67,9 @@ function init() {
     // Generate equipment rows dynamically
     generateEquipmentRows();
 
+    // Set default values for date and time fields
+    setDefaultValues();
+
     // Set up event listeners
     if (form) {
         form.addEventListener('submit', handleFormSubmit);
@@ -115,6 +103,50 @@ function formatTime(timeValue) {
 }
 
 /**
+ * Format date as YYYY-MM-DD for date input fields
+ * @param {Date} date - The date object to format
+ * @returns {string} Formatted date string (YYYY-MM-DD)
+ */
+function formatDateInput(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+/**
+ * Set default values for date and time fields
+ */
+function setDefaultValues() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const dayAfterTomorrow = new Date();
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+    
+    const pickupDateInput = document.getElementById('pickupDate');
+    const pickupHourInput = document.getElementById('pickupHour');
+    const returnDateInput = document.getElementById('returnDate');
+    const returnHourInput = document.getElementById('returnHour');
+    
+    if (pickupDateInput && !pickupDateInput.value) {
+        pickupDateInput.value = formatDateInput(tomorrow);
+    }
+    
+    if (pickupHourInput && !pickupHourInput.value) {
+        pickupHourInput.value = '16:00';
+    }
+    
+    if (returnDateInput && !returnDateInput.value) {
+        returnDateInput.value = formatDateInput(dayAfterTomorrow);
+    }
+    
+    if (returnHourInput && !returnHourInput.value) {
+        returnHourInput.value = '16:00';
+    }
+}
+
+/**
  * Convert equipment name to ID format for input fields
  * @param {string} name - Equipment name
  * @returns {string} ID-friendly format
@@ -145,7 +177,7 @@ function collectFormData() {
     // Collect equipment data
     const equipment = [];
     
-    EQUIPMENT_ITEMS.forEach(item => {
+    SETTINGS.equipmentItems.forEach(item => {
         const itemId = equipmentNameToId(item);
         const quantityInput = document.getElementById(`quantity-${itemId}`);
         const notesInput = document.getElementById(`notes-${itemId}`);
@@ -359,7 +391,7 @@ function setLoadingState(isLoading) {
  */
 async function submitToWebhook(data) {
     try {
-        const response = await fetch(WEBHOOK_URL, {
+        const response = await fetch(SETTINGS.webhookUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -419,9 +451,6 @@ async function handleFormSubmit(event) {
         return;
     }
 
-    // Webhook is not yet working - skip submission
-    // TODO: Enable webhook submission when ready
-    /*
     // Set loading state
     setLoadingState(true);
 
@@ -446,16 +475,6 @@ async function handleFormSubmit(event) {
             'error'
         );
     }
-    */
-    
-    // For now, just show success message (webhook disabled)
-    showFeedback('Formularz został zweryfikowany pomyślnie! (Webhook wyłączony)', 'success');
-    
-    // Reset form after showing message
-    setTimeout(() => {
-        resetForm();
-        hideFeedback();
-    }, 3000);
 }
 
 // Initialize the application when DOM is ready
