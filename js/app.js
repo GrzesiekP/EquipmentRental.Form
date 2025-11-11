@@ -4,7 +4,24 @@
 
 // Constants
 const WEBHOOK_URL = 'https://tantunergon8n.duckdns.org/webhook-test/d3f86dbd-05be-45c2-ba6d-e73c2ee4e244';
-const EQUIPMENT_ITEMS = ['Raki', 'Kask', 'Czekan'];
+const EQUIPMENT_ITEMS = [
+    'Raki Koszykowe',
+    'Czekan',
+    'Raki Półautomatyczne',
+    'Kijki Trekkingowe',
+    'ABC Lawinowe',
+    'Łopata Lawinowa',
+    'Detektor Lawinowy',
+    'Sonda Lawinowa',
+    'Zestaw Via Ferrata',
+    'Kask',
+    'Lonża Via Ferrata',
+    'Uprząż',
+    'Stuptuty',
+    'Nosidełko Turystyczne dla Dzieci',
+    'Raczki Turystyczne',
+    'Plecak'
+];
 
 // DOM Element References
 let form;
@@ -28,41 +45,97 @@ function init() {
 }
 
 /**
+ * Format date as YYYY-MM-DD HH:MM:SS
+ * @param {Date} date - The date object to format
+ * @returns {string} Formatted date string
+ */
+function formatSubmitDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+/**
+ * Format time input value as HH:MM:SS
+ * @param {string} timeValue - Time value from input field (HH:MM)
+ * @returns {string} Formatted time string (HH:MM:SS)
+ */
+function formatTime(timeValue) {
+    if (!timeValue) return '00:00:00';
+    return `${timeValue}:00`;
+}
+
+/**
+ * Convert equipment name to ID format for input fields
+ * @param {string} name - Equipment name
+ * @returns {string} ID-friendly format
+ */
+function equipmentNameToId(name) {
+    return name.toLowerCase().replace(/\s+/g, '-');
+}
+
+/**
  * Collect all form data and structure it as JSON
  * @returns {Object} Formatted data object ready for submission
  */
 function collectFormData() {
-    // Get personal information
-    const name = document.getElementById('name').value.trim();
-    const surname = document.getElementById('surname').value.trim();
+    // Get personal information with null checks
+    const name = document.getElementById('name')?.value?.trim() || '';
+    const surname = document.getElementById('surname')?.value?.trim() || '';
+    const peselOrdId = document.getElementById('peselOrdId')?.value?.trim() || '';
+    const phone = document.getElementById('phone')?.value?.trim() || '';
+    const email = document.getElementById('email')?.value?.trim() || '';
+    const address = document.getElementById('address')?.value?.trim() || '';
+    
+    // Get rental dates and times with null checks
+    const pickupDate = document.getElementById('pickupDate')?.value || '';
+    const returnDate = document.getElementById('returnDate')?.value || '';
+    const pickupHour = formatTime(document.getElementById('pickupHour')?.value || '');
+    const returnHour = formatTime(document.getElementById('returnHour')?.value || '');
 
     // Collect equipment data
     const equipment = [];
     
     EQUIPMENT_ITEMS.forEach(item => {
-        const itemLower = item.toLowerCase();
-        const quantityInput = document.getElementById(`quantity-${itemLower}`);
-        const notesInput = document.getElementById(`notes-${itemLower}`);
+        const itemId = equipmentNameToId(item);
+        const quantityInput = document.getElementById(`quantity-${itemId}`);
+        const notesInput = document.getElementById(`notes-${itemId}`);
+        
+        // Skip if elements don't exist
+        if (!quantityInput || !notesInput) return;
         
         const quantity = parseInt(quantityInput.value, 10) || 0;
-        const notes = notesInput.value.trim();
+        const comments = notesInput.value.trim();
 
-        // Only include items with quantity > 0 OR notes provided
-        if (quantity > 0 || notes !== '') {
+        // Only include items with quantity > 0 OR comments provided
+        if (quantity > 0 || comments !== '') {
             equipment.push({
-                item: item,
+                type: item,
                 quantity: quantity,
-                notes: notes
+                comments: comments !== '' ? comments : null
             });
         }
     });
 
-    // Create the data object with ISO 8601 timestamp
+    // Create the data object with formatted timestamp
     const data = {
+        submitDate: formatSubmitDate(new Date()),
         name: name,
         surname: surname,
-        equipment: equipment,
-        timestamp: new Date().toISOString()
+        peselOrdId: peselOrdId,
+        phone: phone,
+        email: email,
+        address: address,
+        pickupDate: pickupDate,
+        returnDate: returnDate,
+        pickupHour: pickupHour,
+        returnHour: returnHour,
+        equipment: equipment
     };
 
     return data;
@@ -86,6 +159,80 @@ function validateForm(data) {
         return {
             isValid: false,
             message: 'Nazwisko jest wymagane'
+        };
+    }
+    
+    if (!data.peselOrdId || data.peselOrdId === '') {
+        return {
+            isValid: false,
+            message: 'PESEL lub ID jest wymagane'
+        };
+    }
+    
+    if (!data.phone || data.phone === '') {
+        return {
+            isValid: false,
+            message: 'Telefon jest wymagany'
+        };
+    }
+    
+    if (!data.email || data.email === '') {
+        return {
+            isValid: false,
+            message: 'Email jest wymagany'
+        };
+    }
+    
+    if (!data.address || data.address === '') {
+        return {
+            isValid: false,
+            message: 'Adres jest wymagany'
+        };
+    }
+    
+    if (!data.pickupDate || data.pickupDate === '') {
+        return {
+            isValid: false,
+            message: 'Data odbioru jest wymagana'
+        };
+    }
+    
+    if (!data.returnDate || data.returnDate === '') {
+        return {
+            isValid: false,
+            message: 'Data zwrotu jest wymagana'
+        };
+    }
+    
+    // CRITICAL: Validate dates BEFORE time validation
+    // This ensures users see date errors even if times aren't filled
+    if (data.pickupDate && data.returnDate) {
+        const pickup = new Date(data.pickupDate);
+        const returnD = new Date(data.returnDate);
+        console.log('🔍 DEBUG: Date validation - Pickup:', pickup, 'Return:', returnD);
+        console.log('🔍 DEBUG: Is return < pickup?', returnD < pickup);
+        
+        if (returnD < pickup) {
+            console.log('🔍 DEBUG: Date validation FAILED - returning error');
+            return {
+                isValid: false,
+                message: 'Data zwrotu musi być równa lub późniejsza od daty odbioru'
+            };
+        }
+    }
+    
+    // Validate time fields AFTER date validation
+    if (!data.pickupHour || data.pickupHour === '00:00:00') {
+        return {
+            isValid: false,
+            message: 'Godzina odbioru jest wymagana'
+        };
+    }
+    
+    if (!data.returnHour || data.returnHour === '00:00:00') {
+        return {
+            isValid: false,
+            message: 'Godzina zwrotu jest wymagana'
         };
     }
 
@@ -199,16 +346,20 @@ function resetForm() {
  */
 async function handleFormSubmit(event) {
     event.preventDefault();
+    console.log('🔍 DEBUG: handleFormSubmit called');
 
     // Hide any existing feedback
     hideFeedback();
 
     // Collect form data
     const formData = collectFormData();
+    console.log('🔍 DEBUG: Form data collected:', formData);
 
     // Validate the data
     const validation = validateForm(formData);
+    console.log('🔍 DEBUG: Validation result:', validation);
     if (!validation.isValid) {
+        console.log('🔍 DEBUG: Validation failed, showing error:', validation.message);
         showFeedback(validation.message, 'error');
         return;
     }

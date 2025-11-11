@@ -14,28 +14,113 @@
         </header>
         
         <main>
-            <form id="equipmentForm">
+            <form id="equipmentForm" novalidate>
                 <!-- Personal Information Section -->
                 <section class="personal-info">
+                    <h2>Dane osobowe</h2>
                     <div class="form-group">
                         <label for="name">Imię *</label>
-                        <input 
-                            type="text" 
-                            id="name" 
+                        <input
+                            type="text"
+                            id="name"
                             name="name"
-                            required 
+                            required
                             aria-required="true"
                             autocomplete="given-name">
                     </div>
                     <div class="form-group">
                         <label for="surname">Nazwisko *</label>
-                        <input 
-                            type="text" 
-                            id="surname" 
+                        <input
+                            type="text"
+                            id="surname"
                             name="surname"
-                            required 
+                            required
                             aria-required="true"
                             autocomplete="family-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="peselOrdId">PESEL lub ID *</label>
+                        <input
+                            type="text"
+                            id="peselOrdId"
+                            name="peselOrdId"
+                            required
+                            aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefon *</label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            required
+                            aria-required="true"
+                            autocomplete="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            aria-required="true"
+                            autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Adres *</label>
+                        <input
+                            type="text"
+                            id="address"
+                            name="address"
+                            required
+                            aria-required="true"
+                            autocomplete="street-address">
+                    </div>
+                </section>
+                
+                <!-- Rental Dates Section -->
+                <section class="rental-dates">
+                    <h2>Termin wynajmu</h2>
+                    <div class="date-time-row">
+                        <div class="form-group">
+                            <label for="pickupDate">Data odbioru *</label>
+                            <input
+                                type="date"
+                                id="pickupDate"
+                                name="pickupDate"
+                                required
+                                aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="pickupHour">Godzina odbioru *</label>
+                            <input
+                                type="time"
+                                id="pickupHour"
+                                name="pickupHour"
+                                required
+                                aria-required="true">
+                        </div>
+                    </div>
+                    <div class="date-time-row">
+                        <div class="form-group">
+                            <label for="returnDate">Data zwrotu *</label>
+                            <input
+                                type="date"
+                                id="returnDate"
+                                name="returnDate"
+                                required
+                                aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="returnHour">Godzina zwrotu *</label>
+                            <input
+                                type="time"
+                                id="returnHour"
+                                name="returnHour"
+                                required
+                                aria-required="true">
+                        </div>
                     </div>
                 </section>
                 
@@ -50,51 +135,27 @@
                             <div class="col-notes" role="columnheader">Uwagi</div>
                         </div>
                         
-                        <!-- Equipment item: Raki -->
-                        <div class="equipment-row" data-equipment="Raki" role="row">
-                            <div class="col-equipment" role="cell">Raki</div>
+                        <!-- Equipment item: Raki Koszykowe -->
+                        <div class="equipment-row" data-equipment="Raki Koszykowe" role="row">
+                            <div class="col-equipment" role="cell">Raki Koszykowe</div>
                             <div class="col-quantity" role="cell">
-                                <label for="quantity-raki" class="sr-only">Ilość - Raki</label>
-                                <input 
-                                    type="number" 
-                                    id="quantity-raki"
-                                    name="quantity-raki" 
-                                    min="0" 
+                                <label for="quantity-raki-koszykowe" class="sr-only">Ilość - Raki Koszykowe</label>
+                                <input
+                                    type="number"
+                                    id="quantity-raki-koszykowe"
+                                    name="quantity-raki-koszykowe"
+                                    min="0"
                                     step="1"
                                     value="0"
-                                    aria-label="Ilość - Raki">
+                                    aria-label="Ilość - Raki Koszykowe">
                             </div>
                             <div class="col-notes" role="cell">
-                                <label for="notes-raki" class="sr-only">Uwagi - Raki</label>
-                                <input 
-                                    type="text" 
-                                    id="notes-raki"
-                                    name="notes-raki"
-                                    aria-label="Uwagi - Raki">
-                            </div>
-                        </div>
-                        
-                        <!-- Equipment item: Kask -->
-                        <div class="equipment-row" data-equipment="Kask" role="row">
-                            <div class="col-equipment" role="cell">Kask</div>
-                            <div class="col-quantity" role="cell">
-                                <label for="quantity-kask" class="sr-only">Ilość - Kask</label>
-                                <input 
-                                    type="number" 
-                                    id="quantity-kask"
-                                    name="quantity-kask" 
-                                    min="0" 
-                                    step="1"
-                                    value="0"
-                                    aria-label="Ilość - Kask">
-                            </div>
-                            <div class="col-notes" role="cell">
-                                <label for="notes-kask" class="sr-only">Uwagi - Kask</label>
-                                <input 
-                                    type="text" 
-                                    id="notes-kask"
-                                    name="notes-kask"
-                                    aria-label="Uwagi - Kask">
+                                <label for="notes-raki-koszykowe" class="sr-only">Uwagi - Raki Koszykowe</label>
+                                <input
+                                    type="text"
+                                    id="notes-raki-koszykowe"
+                                    name="notes-raki-koszykowe"
+                                    aria-label="Uwagi - Raki Koszykowe">
                             </div>
                         </div>
                         
@@ -103,22 +164,358 @@
                             <div class="col-equipment" role="cell">Czekan</div>
                             <div class="col-quantity" role="cell">
                                 <label for="quantity-czekan" class="sr-only">Ilość - Czekan</label>
-                                <input 
-                                    type="number" 
+                                <input
+                                    type="number"
                                     id="quantity-czekan"
-                                    name="quantity-czekan" 
-                                    min="0" 
+                                    name="quantity-czekan"
+                                    min="0"
                                     step="1"
                                     value="0"
                                     aria-label="Ilość - Czekan">
                             </div>
                             <div class="col-notes" role="cell">
                                 <label for="notes-czekan" class="sr-only">Uwagi - Czekan</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     id="notes-czekan"
                                     name="notes-czekan"
                                     aria-label="Uwagi - Czekan">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Raki Półautomatyczne -->
+                        <div class="equipment-row" data-equipment="Raki Półautomatyczne" role="row">
+                            <div class="col-equipment" role="cell">Raki Półautomatyczne</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-raki-polautomatyczne" class="sr-only">Ilość - Raki Półautomatyczne</label>
+                                <input
+                                    type="number"
+                                    id="quantity-raki-polautomatyczne"
+                                    name="quantity-raki-polautomatyczne"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Raki Półautomatyczne">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-raki-polautomatyczne" class="sr-only">Uwagi - Raki Półautomatyczne</label>
+                                <input
+                                    type="text"
+                                    id="notes-raki-polautomatyczne"
+                                    name="notes-raki-polautomatyczne"
+                                    aria-label="Uwagi - Raki Półautomatyczne">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Kijki Trekkingowe -->
+                        <div class="equipment-row" data-equipment="Kijki Trekkingowe" role="row">
+                            <div class="col-equipment" role="cell">Kijki Trekkingowe</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-kijki-trekkingowe" class="sr-only">Ilość - Kijki Trekkingowe</label>
+                                <input
+                                    type="number"
+                                    id="quantity-kijki-trekkingowe"
+                                    name="quantity-kijki-trekkingowe"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Kijki Trekkingowe">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-kijki-trekkingowe" class="sr-only">Uwagi - Kijki Trekkingowe</label>
+                                <input
+                                    type="text"
+                                    id="notes-kijki-trekkingowe"
+                                    name="notes-kijki-trekkingowe"
+                                    aria-label="Uwagi - Kijki Trekkingowe">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: ABC Lawinowe -->
+                        <div class="equipment-row" data-equipment="ABC Lawinowe" role="row">
+                            <div class="col-equipment" role="cell">ABC Lawinowe</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-abc-lawinowe" class="sr-only">Ilość - ABC Lawinowe</label>
+                                <input
+                                    type="number"
+                                    id="quantity-abc-lawinowe"
+                                    name="quantity-abc-lawinowe"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - ABC Lawinowe">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-abc-lawinowe" class="sr-only">Uwagi - ABC Lawinowe</label>
+                                <input
+                                    type="text"
+                                    id="notes-abc-lawinowe"
+                                    name="notes-abc-lawinowe"
+                                    aria-label="Uwagi - ABC Lawinowe">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Łopata Lawinowa -->
+                        <div class="equipment-row" data-equipment="Łopata Lawinowa" role="row">
+                            <div class="col-equipment" role="cell">Łopata Lawinowa</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-lopata-lawinowa" class="sr-only">Ilość - Łopata Lawinowa</label>
+                                <input
+                                    type="number"
+                                    id="quantity-lopata-lawinowa"
+                                    name="quantity-lopata-lawinowa"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Łopata Lawinowa">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-lopata-lawinowa" class="sr-only">Uwagi - Łopata Lawinowa</label>
+                                <input
+                                    type="text"
+                                    id="notes-lopata-lawinowa"
+                                    name="notes-lopata-lawinowa"
+                                    aria-label="Uwagi - Łopata Lawinowa">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Detektor Lawinowy -->
+                        <div class="equipment-row" data-equipment="Detektor Lawinowy" role="row">
+                            <div class="col-equipment" role="cell">Detektor Lawinowy</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-detektor-lawinowy" class="sr-only">Ilość - Detektor Lawinowy</label>
+                                <input
+                                    type="number"
+                                    id="quantity-detektor-lawinowy"
+                                    name="quantity-detektor-lawinowy"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Detektor Lawinowy">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-detektor-lawinowy" class="sr-only">Uwagi - Detektor Lawinowy</label>
+                                <input
+                                    type="text"
+                                    id="notes-detektor-lawinowy"
+                                    name="notes-detektor-lawinowy"
+                                    aria-label="Uwagi - Detektor Lawinowy">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Sonda Lawinowa -->
+                        <div class="equipment-row" data-equipment="Sonda Lawinowa" role="row">
+                            <div class="col-equipment" role="cell">Sonda Lawinowa</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-sonda-lawinowa" class="sr-only">Ilość - Sonda Lawinowa</label>
+                                <input
+                                    type="number"
+                                    id="quantity-sonda-lawinowa"
+                                    name="quantity-sonda-lawinowa"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Sonda Lawinowa">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-sonda-lawinowa" class="sr-only">Uwagi - Sonda Lawinowa</label>
+                                <input
+                                    type="text"
+                                    id="notes-sonda-lawinowa"
+                                    name="notes-sonda-lawinowa"
+                                    aria-label="Uwagi - Sonda Lawinowa">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Zestaw Via Ferrata -->
+                        <div class="equipment-row" data-equipment="Zestaw Via Ferrata" role="row">
+                            <div class="col-equipment" role="cell">Zestaw Via Ferrata</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-zestaw-via-ferrata" class="sr-only">Ilość - Zestaw Via Ferrata</label>
+                                <input
+                                    type="number"
+                                    id="quantity-zestaw-via-ferrata"
+                                    name="quantity-zestaw-via-ferrata"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Zestaw Via Ferrata">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-zestaw-via-ferrata" class="sr-only">Uwagi - Zestaw Via Ferrata</label>
+                                <input
+                                    type="text"
+                                    id="notes-zestaw-via-ferrata"
+                                    name="notes-zestaw-via-ferrata"
+                                    aria-label="Uwagi - Zestaw Via Ferrata">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Kask -->
+                        <div class="equipment-row" data-equipment="Kask" role="row">
+                            <div class="col-equipment" role="cell">Kask</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-kask" class="sr-only">Ilość - Kask</label>
+                                <input
+                                    type="number"
+                                    id="quantity-kask"
+                                    name="quantity-kask"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Kask">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-kask" class="sr-only">Uwagi - Kask</label>
+                                <input
+                                    type="text"
+                                    id="notes-kask"
+                                    name="notes-kask"
+                                    aria-label="Uwagi - Kask">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Lonża Via Ferrata -->
+                        <div class="equipment-row" data-equipment="Lonża Via Ferrata" role="row">
+                            <div class="col-equipment" role="cell">Lonża Via Ferrata</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-lonza-via-ferrata" class="sr-only">Ilość - Lonża Via Ferrata</label>
+                                <input
+                                    type="number"
+                                    id="quantity-lonza-via-ferrata"
+                                    name="quantity-lonza-via-ferrata"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Lonża Via Ferrata">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-lonza-via-ferrata" class="sr-only">Uwagi - Lonża Via Ferrata</label>
+                                <input
+                                    type="text"
+                                    id="notes-lonza-via-ferrata"
+                                    name="notes-lonza-via-ferrata"
+                                    aria-label="Uwagi - Lonża Via Ferrata">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Uprząż -->
+                        <div class="equipment-row" data-equipment="Uprząż" role="row">
+                            <div class="col-equipment" role="cell">Uprząż</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-uprzaz" class="sr-only">Ilość - Uprząż</label>
+                                <input
+                                    type="number"
+                                    id="quantity-uprzaz"
+                                    name="quantity-uprzaz"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Uprząż">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-uprzaz" class="sr-only">Uwagi - Uprząż</label>
+                                <input
+                                    type="text"
+                                    id="notes-uprzaz"
+                                    name="notes-uprzaz"
+                                    aria-label="Uwagi - Uprząż">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Stuptuty -->
+                        <div class="equipment-row" data-equipment="Stuptuty" role="row">
+                            <div class="col-equipment" role="cell">Stuptuty</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-stuptuty" class="sr-only">Ilość - Stuptuty</label>
+                                <input
+                                    type="number"
+                                    id="quantity-stuptuty"
+                                    name="quantity-stuptuty"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Stuptuty">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-stuptuty" class="sr-only">Uwagi - Stuptuty</label>
+                                <input
+                                    type="text"
+                                    id="notes-stuptuty"
+                                    name="notes-stuptuty"
+                                    aria-label="Uwagi - Stuptuty">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Nosidełko Turystyczne dla Dzieci -->
+                        <div class="equipment-row" data-equipment="Nosidełko Turystyczne dla Dzieci" role="row">
+                            <div class="col-equipment" role="cell">Nosidełko Turystyczne dla Dzieci</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-nosidelko-turystyczne-dla-dzieci" class="sr-only">Ilość - Nosidełko Turystyczne dla Dzieci</label>
+                                <input
+                                    type="number"
+                                    id="quantity-nosidelko-turystyczne-dla-dzieci"
+                                    name="quantity-nosidelko-turystyczne-dla-dzieci"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Nosidełko Turystyczne dla Dzieci">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-nosidelko-turystyczne-dla-dzieci" class="sr-only">Uwagi - Nosidełko Turystyczne dla Dzieci</label>
+                                <input
+                                    type="text"
+                                    id="notes-nosidelko-turystyczne-dla-dzieci"
+                                    name="notes-nosidelko-turystyczne-dla-dzieci"
+                                    aria-label="Uwagi - Nosidełko Turystyczne dla Dzieci">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Raczki Turystyczne -->
+                        <div class="equipment-row" data-equipment="Raczki Turystyczne" role="row">
+                            <div class="col-equipment" role="cell">Raczki Turystyczne</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-raczki-turystyczne" class="sr-only">Ilość - Raczki Turystyczne</label>
+                                <input
+                                    type="number"
+                                    id="quantity-raczki-turystyczne"
+                                    name="quantity-raczki-turystyczne"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Raczki Turystyczne">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-raczki-turystyczne" class="sr-only">Uwagi - Raczki Turystyczne</label>
+                                <input
+                                    type="text"
+                                    id="notes-raczki-turystyczne"
+                                    name="notes-raczki-turystyczne"
+                                    aria-label="Uwagi - Raczki Turystyczne">
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment item: Plecak -->
+                        <div class="equipment-row" data-equipment="Plecak" role="row">
+                            <div class="col-equipment" role="cell">Plecak</div>
+                            <div class="col-quantity" role="cell">
+                                <label for="quantity-plecak" class="sr-only">Ilość - Plecak</label>
+                                <input
+                                    type="number"
+                                    id="quantity-plecak"
+                                    name="quantity-plecak"
+                                    min="0"
+                                    step="1"
+                                    value="0"
+                                    aria-label="Ilość - Plecak">
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label for="notes-plecak" class="sr-only">Uwagi - Plecak</label>
+                                <input
+                                    type="text"
+                                    id="notes-plecak"
+                                    name="notes-plecak"
+                                    aria-label="Uwagi - Plecak">
                             </div>
                         </div>
                     </div>
