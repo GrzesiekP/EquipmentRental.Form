@@ -23,7 +23,6 @@
           </div>
         }
         
-        <fieldset [disabled]="isSubmitting()">
         <!-- Personal Information Section -->
         <mat-card class="section-card">
           <mat-card-header>
@@ -202,7 +201,6 @@
             {{ isSubmitting() ? 'Wysyłanie...' : 'Wyślij' }}
           </button>
         </div>
-        </fieldset>
       </form>
     } @else {
       <!-- Success Page -->

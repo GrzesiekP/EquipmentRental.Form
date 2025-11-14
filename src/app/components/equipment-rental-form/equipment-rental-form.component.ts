@@ -174,15 +174,18 @@ export class EquipmentRentalFormComponent implements OnInit {
     }
 
     this.isSubmitting.set(true);
+    this.rentalForm.disable(); // Disable all form controls
     const formData = this.collectFormData();
 
     this.formSubmissionService.submitForm(formData).subscribe({
       next: () => {
         this.isSubmitting.set(false);
+        this.rentalForm.enable(); // Re-enable form controls
         this.showSuccess.set(true);
       },
       error: (error) => {
         this.isSubmitting.set(false);
+        this.rentalForm.enable(); // Re-enable form controls
         console.error('Submission error:', error);
         this.showFeedback('Wystąpił błąd podczas wysyłania formularza. Spróbuj ponownie.', 'error');
       }
