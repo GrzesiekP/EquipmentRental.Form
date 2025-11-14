@@ -88,17 +88,21 @@
                 <mat-error *ngIf="rentalForm.get('pickupDate')?.hasError('required')">Data odbioru jest wymagana</mat-error>
               </mat-form-field>
               
-              <mat-form-field appearance="outline" class="time-field">
-                <mat-label>Godzina odbioru</mat-label>
-                <input matInput type="time" formControlName="pickupHour" required>
-                <button mat-icon-button matSuffix type="button" (click)="incrementTime('pickupHour')">
-                  <mat-icon>arrow_upward</mat-icon>
-                </button>
-                <button mat-icon-button matSuffix type="button" (click)="decrementTime('pickupHour')">
-                  <mat-icon>arrow_downward</mat-icon>
-                </button>
-                <mat-error *ngIf="rentalForm.get('pickupHour')?.hasError('required')">Godzina odbioru jest wymagana</mat-error>
-              </mat-form-field>
+              <div class="time-input-group">
+                <mat-form-field appearance="outline" class="time-field">
+                  <mat-label>Godzina odbioru</mat-label>
+                  <input matInput type="time" formControlName="pickupHour" required>
+                  <mat-error *ngIf="rentalForm.get('pickupHour')?.hasError('required')">Godzina odbioru jest wymagana</mat-error>
+                </mat-form-field>
+                <div class="time-controls">
+                  <button mat-icon-button type="button" (click)="incrementTime('pickupHour')" aria-label="Zwiększ godzinę">
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button mat-icon-button type="button" (click)="decrementTime('pickupHour')" aria-label="Zmniejsz godzinę">
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                </div>
+              </div>
             </div>
             
             <h3>Zwrot</h3>
@@ -111,17 +115,21 @@
                 <mat-error *ngIf="rentalForm.get('returnDate')?.hasError('required')">Data zwrotu jest wymagana</mat-error>
               </mat-form-field>
               
-              <mat-form-field appearance="outline" class="time-field">
-                <mat-label>Godzina zwrotu</mat-label>
-                <input matInput type="time" formControlName="returnHour" required>
-                <button mat-icon-button matSuffix type="button" (click)="incrementTime('returnHour')">
-                  <mat-icon>arrow_upward</mat-icon>
-                </button>
-                <button mat-icon-button matSuffix type="button" (click)="decrementTime('returnHour')">
-                  <mat-icon>arrow_downward</mat-icon>
-                </button>
-                <mat-error *ngIf="rentalForm.get('returnHour')?.hasError('required')">Godzina zwrotu jest wymagana</mat-error>
-              </mat-form-field>
+              <div class="time-input-group">
+                <mat-form-field appearance="outline" class="time-field">
+                  <mat-label>Godzina zwrotu</mat-label>
+                  <input matInput type="time" formControlName="returnHour" required>
+                  <mat-error *ngIf="rentalForm.get('returnHour')?.hasError('required')">Godzina zwrotu jest wymagana</mat-error>
+                </mat-form-field>
+                <div class="time-controls">
+                  <button mat-icon-button type="button" (click)="incrementTime('returnHour')" aria-label="Zwiększ godzinę">
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button mat-icon-button type="button" (click)="decrementTime('returnHour')" aria-label="Zmniejsz godzinę">
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                </div>
+              </div>
             </div>
           </mat-card-content>
         </mat-card>
@@ -145,15 +153,19 @@
                 <div class="equipment-row" formArrayName="equipment">
                   <div class="col-name">{{ item }}</div>
                   <div class="col-quantity" [formGroupName]="i">
-                    <mat-form-field appearance="outline" class="quantity-field">
-                      <input matInput type="number" formControlName="quantity" min="0">
-                      <button mat-icon-button matSuffix type="button" (click)="incrementQuantity(i)">
-                        <mat-icon>add</mat-icon>
-                      </button>
-                      <button mat-icon-button matSuffix type="button" (click)="decrementQuantity(i)">
-                        <mat-icon>remove</mat-icon>
-                      </button>
-                    </mat-form-field>
+                    <div class="quantity-input-group">
+                      <mat-form-field appearance="outline" class="quantity-field">
+                        <input matInput type="number" formControlName="quantity" min="0">
+                      </mat-form-field>
+                      <div class="quantity-controls">
+                        <button mat-icon-button type="button" (click)="incrementQuantity(i)" aria-label="Zwiększ ilość">
+                          <mat-icon>add</mat-icon>
+                        </button>
+                        <button mat-icon-button type="button" (click)="decrementQuantity(i)" aria-label="Zmniejsz ilość">
+                          <mat-icon>remove</mat-icon>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                   <div class="col-notes" [formGroupName]="i">
                     <mat-form-field appearance="outline" class="notes-field">

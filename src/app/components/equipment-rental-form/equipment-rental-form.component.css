@@ -53,8 +53,36 @@ header h1 {
     flex: 1;
 }
 
+.time-input-group {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
 .time-field {
     flex: 1;
+}
+
+.time-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 4px;
+}
+
+.time-controls button {
+    width: 36px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0;
+}
+
+.time-controls mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
 }
 
 h3 {
@@ -104,18 +132,50 @@ h3 {
     font-size: 14px;
 }
 
-.col-quantity,
+.col-quantity {
+    display: flex;
+    align-items: flex-start;
+}
+
 .col-notes {
     display: flex;
     align-items: center;
 }
 
-.quantity-field,
-.notes-field {
+.quantity-input-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
     width: 100%;
 }
 
-.quantity-field mat-form-field {
+.quantity-field {
+    flex: 1;
+    min-width: 80px;
+}
+
+.quantity-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 4px;
+}
+
+.quantity-controls button {
+    width: 36px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0;
+}
+
+.quantity-controls mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+}
+
+.notes-field {
     width: 100%;
 }
 
@@ -205,6 +265,26 @@ footer {
         font-weight: 500;
         margin-bottom: 8px;
     }
+    
+    .time-input-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .time-controls {
+        flex-direction: row;
+        gap: 8px;
+    }
+    
+    .quantity-input-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .quantity-controls {
+        flex-direction: row;
+        gap: 8px;
+    }
 }
 
 /* Material Design Overrides */
@@ -214,14 +294,4 @@ footer {
 
 ::ng-deep .mat-mdc-text-field-wrapper {
     background-color: white;
-}
-
-::ng-deep .quantity-field .mat-mdc-text-field-wrapper,
-::ng-deep .notes-field .mat-mdc-text-field-wrapper {
-    padding: 0;
-}
-
-::ng-deep .quantity-field .mat-mdc-form-field-infix,
-::ng-deep .notes-field .mat-mdc-form-field-infix {
-    min-height: 40px;
 }
