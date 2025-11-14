@@ -151,7 +151,7 @@ h3 {
 
 .quantity-field {
     flex: 1;
-    min-width: 80px;
+    width: 100%;
 }
 
 .quantity-controls {
@@ -245,42 +245,42 @@ footer {
     .container {
         padding: 12px;
     }
-    
+
     .date-time-row {
         flex-direction: column;
         gap: 12px;
     }
-    
+
     .equipment-header,
     .equipment-row {
         grid-template-columns: 1fr;
         gap: 8px;
     }
-    
+
     .equipment-header {
         display: none;
     }
-    
+
     .col-name {
         font-weight: 500;
         margin-bottom: 8px;
     }
-    
+
     .time-input-group {
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .time-controls {
         flex-direction: row;
         gap: 8px;
     }
-    
+
     .quantity-input-group {
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .quantity-controls {
         flex-direction: row;
         gap: 8px;
