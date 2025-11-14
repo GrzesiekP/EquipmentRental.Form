@@ -1,4 +1,16 @@
 import { useState } from 'react';
+import { 
+  CssBaseline, 
+  ThemeProvider, 
+  createTheme,
+  Container,
+  Box,
+  Typography,
+  Button,
+  Alert,
+  Paper,
+  Link
+} from '@mui/material';
 import { SETTINGS } from './settings';
 import { formatSubmitDate, formatTime, formatDateInput } from './utils';
 import { validateForm } from './validation';
@@ -6,6 +18,18 @@ import PersonalInfoSection from './components/PersonalInfoSection';
 import RentalDatesSection from './components/RentalDatesSection';
 import EquipmentSection from './components/EquipmentSection';
 import SuccessPage from './components/SuccessPage';
+
+// Create MUI theme
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#2563eb',
+    },
+    secondary: {
+      main: '#059669',
+    },
+  },
+});
 
 function App() {
   // Calculate default dates
@@ -157,65 +181,88 @@ function App() {
   };
 
   if (showSuccess) {
-    return <SuccessPage />;
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <SuccessPage />
+      </ThemeProvider>
+    );
   }
 
   return (
-    <div className="container">
-      <header>
-        <h1>Formularz wynajmu sprzętu</h1>
-      </header>
-      
-      <main>
-        <div className="intro-text">
-          <p>Dzień dobry,</p>
-          <p>w celu dokonania rezerwacji sprzętu proszę wypełnić poniższy formularz - są to dane potrzebne do zawarcia umowy wypożyczenia.</p>
-          <p>Dostępny sprzęt i cennik: <a href="https://kaukazwypozyczalnia.pl/cennik" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/cennik</a></p>
-          <p>Grzegorz Pawłowski,<br />Wypożyczalnia Kaukaz</p>
-        </div>
-        
-        <form id="equipmentForm" onSubmit={handleSubmit} noValidate>
-          <PersonalInfoSection
-            formData={formData}
-            onChange={handleInputChange}
-            disabled={isSubmitting}
-          />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: '#f9fafb' }}>
+        <Container maxWidth="md" sx={{ flex: 1, py: 4 }}>
+          <Paper elevation={0} sx={{ p: 4, mb: 4, bgcolor: 'white' }}>
+            <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 3 }}>
+              Formularz wynajmu sprzętu
+            </Typography>
+            
+            <Box sx={{ mb: 4, p: 2, bgcolor: '#f0f9ff', borderRadius: 1 }}>
+              <Typography variant="body1" paragraph>
+                Dzień dobry,
+              </Typography>
+              <Typography variant="body1" paragraph>
+                w celu dokonania rezerwacji sprzętu proszę wypełnić poniższy formularz - są to dane potrzebne do zawarcia umowy wypożyczenia.
+              </Typography>
+              <Typography variant="body1" paragraph>
+                Dostępny sprzęt i cennik: <Link href="https://kaukazwypozyczalnia.pl/cennik" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/cennik</Link>
+              </Typography>
+              <Typography variant="body1">
+                Grzegorz Pawłowski,<br />
+                Wypożyczalnia Kaukaz
+              </Typography>
+            </Box>
+            
+            <Box component="form" onSubmit={handleSubmit} noValidate>
+              <PersonalInfoSection
+                formData={formData}
+                onChange={handleInputChange}
+                disabled={isSubmitting}
+              />
+              
+              <RentalDatesSection
+                formData={formData}
+                onChange={handleInputChange}
+                disabled={isSubmitting}
+              />
+              
+              <EquipmentSection
+                equipment={formData.equipment}
+                onChange={handleEquipmentChange}
+                disabled={isSubmitting}
+              />
+              
+              {feedbackMessage && (
+                <Alert 
+                  severity={feedbackType === 'error' ? 'error' : 'success'}
+                  sx={{ mb: 3 }}
+                >
+                  {feedbackMessage}
+                </Alert>
+              )}
+              
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                <Button 
+                  type="submit" 
+                  variant="contained" 
+                  size="large"
+                  disabled={isSubmitting}
+                  sx={{ minWidth: 200 }}
+                >
+                  {isSubmitting ? 'Wysyłanie...' : 'Wyślij'}
+                </Button>
+              </Box>
+            </Box>
+          </Paper>
           
-          <RentalDatesSection
-            formData={formData}
-            onChange={handleInputChange}
-            disabled={isSubmitting}
-          />
-          
-          <EquipmentSection
-            equipment={formData.equipment}
-            onChange={handleEquipmentChange}
-            disabled={isSubmitting}
-          />
-          
-          {feedbackMessage && (
-            <div 
-              id="feedbackMessage" 
-              className={`feedback ${feedbackType}`} 
-              role="alert" 
-              aria-live="polite"
-            >
-              {feedbackMessage}
-            </div>
-          )}
-          
-          <div className="form-actions">
-            <button type="submit" id="submitBtn" disabled={isSubmitting}>
-              {isSubmitting ? 'Wysyłanie...' : 'Wyślij'}
-            </button>
-          </div>
-        </form>
-      </main>
-      
-      <footer>
-        <p>&copy; 2025 Formularz wynajmu sprzętu</p>
-      </footer>
-    </div>
+          <Typography variant="body2" color="text.secondary" align="center">
+            &copy; 2025 Formularz wynajmu sprzętu
+          </Typography>
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 }
 

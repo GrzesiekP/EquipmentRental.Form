@@ -1,3 +1,18 @@
+import { 
+  Typography, 
+  Box, 
+  TextField, 
+  IconButton, 
+  InputAdornment,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from '@mui/material';
+import { Add, Remove } from '@mui/icons-material';
 import { SETTINGS } from '../settings';
 import { equipmentNameToId } from '../utils';
 
@@ -24,83 +39,86 @@ function EquipmentSection({ equipment, onChange, disabled }) {
   };
 
   return (
-    <section className="equipment-section">
-      <h2>Wybór sprzętu</h2>
-      <p className="equipment-instructions">
+    <Box sx={{ mb: 4 }}>
+      <Typography variant="h5" component="h2" gutterBottom>
+        Wybór sprzętu
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Proszę podać ilość rezerwowanego sprzętu. W uwagach można podać numer buta w przypadku rezerwacji raków lub raczków.
-      </p>
-      <div className="equipment-table" id="equipmentTable" role="table" aria-label="Tabela wyboru sprzętu">
-        {/* Table header */}
-        <div className="equipment-row header" role="row">
-          <div className="col-equipment" role="columnheader">Sprzęt</div>
-          <div className="col-quantity" role="columnheader">Ilość</div>
-          <div className="col-notes" role="columnheader">Uwagi</div>
-        </div>
-        
-        {/* Equipment rows */}
-        {SETTINGS.equipmentItems.map((item) => {
-          const itemId = equipmentNameToId(item);
-          const quantity = equipment[itemId]?.quantity || 0;
-          const comments = equipment[itemId]?.comments || '';
-          
-          return (
-            <div key={itemId} className="equipment-row" data-equipment={item} role="row">
-              <div className="col-equipment" role="cell">{item}</div>
-              <div className="col-quantity" role="cell">
-                <label htmlFor={`quantity-${itemId}`} className="sr-only">Ilość - {item}</label>
-                <div className="input-with-spinner">
-                  <input
-                    type="number"
-                    id={`quantity-${itemId}`}
-                    name={`quantity-${itemId}`}
-                    min="0"
-                    step="1"
-                    value={quantity}
-                    onChange={(e) => handleQuantityChange(itemId, e.target.value)}
-                    aria-label={`Ilość - ${item}`}
-                    disabled={disabled}
-                  />
-                  <div className="spinner-buttons">
-                    <button 
-                      type="button" 
-                      className="spinner-btn spinner-up" 
-                      aria-label="Zwiększ ilość" 
-                      tabIndex="-1"
-                      onClick={() => handleQuantityIncrement(itemId)}
+      </Typography>
+      
+      <TableContainer component={Paper} variant="outlined">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold' }}>Sprzęt</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '200px' }}>Ilość</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Uwagi</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {SETTINGS.equipmentItems.map((item) => {
+              const itemId = equipmentNameToId(item);
+              const quantity = equipment[itemId]?.quantity || 0;
+              const comments = equipment[itemId]?.comments || '';
+              
+              return (
+                <TableRow key={itemId}>
+                  <TableCell>{item}</TableCell>
+                  <TableCell>
+                    <TextField
+                      type="number"
+                      value={quantity}
+                      onChange={(e) => handleQuantityChange(itemId, e.target.value)}
+                      size="small"
+                      fullWidth
                       disabled={disabled}
-                    >
-                      <span aria-hidden="true">▲</span>
-                    </button>
-                    <button 
-                      type="button" 
-                      className="spinner-btn spinner-down" 
-                      aria-label="Zmniejsz ilość" 
-                      tabIndex="-1"
-                      onClick={() => handleQuantityDecrement(itemId)}
+                      InputProps={{
+                        inputProps: { min: 0, style: { textAlign: 'center' } },
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <IconButton
+                              size="small"
+                              onClick={() => handleQuantityDecrement(itemId)}
+                              disabled={disabled || quantity === 0}
+                              aria-label="Zmniejsz ilość"
+                            >
+                              <Remove fontSize="small" />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              size="small"
+                              onClick={() => handleQuantityIncrement(itemId)}
+                              disabled={disabled}
+                              aria-label="Zwiększ ilość"
+                            >
+                              <Add fontSize="small" />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      value={comments}
+                      onChange={(e) => handleCommentsChange(itemId, e.target.value)}
+                      size="small"
+                      fullWidth
                       disabled={disabled}
-                    >
-                      <span aria-hidden="true">▼</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="col-notes" role="cell">
-                <label htmlFor={`notes-${itemId}`} className="sr-only">Uwagi - {item}</label>
-                <input
-                  type="text"
-                  id={`notes-${itemId}`}
-                  name={`notes-${itemId}`}
-                  value={comments}
-                  onChange={(e) => handleCommentsChange(itemId, e.target.value)}
-                  aria-label={`Uwagi - ${item}`}
-                  disabled={disabled}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
+                      placeholder="Dodaj uwagi"
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
 

@@ -1,91 +1,75 @@
+import { TextField, Typography, Box } from '@mui/material';
+
 function PersonalInfoSection({ formData, onChange, disabled }) {
   return (
-    <section className="personal-info">
-      <h2>Dane osobowe</h2>
-      <div className="form-group">
-        <label htmlFor="name">Imię *</label>
-        <input
-          type="text"
-          id="name"
+    <Box sx={{ mb: 4 }}>
+      <Typography variant="h5" component="h2" gutterBottom>
+        Dane osobowe
+      </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <TextField
+          label="Imię"
           name="name"
           value={formData.name}
           onChange={onChange}
           required
-          aria-required="true"
-          autoComplete="given-name"
+          fullWidth
           disabled={disabled}
+          autoComplete="given-name"
         />
-      </div>
-      <div className="form-group">
-        <label htmlFor="surname">Nazwisko *</label>
-        <input
-          type="text"
-          id="surname"
+        <TextField
+          label="Nazwisko"
           name="surname"
           value={formData.surname}
           onChange={onChange}
           required
-          aria-required="true"
-          autoComplete="family-name"
+          fullWidth
           disabled={disabled}
+          autoComplete="family-name"
         />
-      </div>
-      <div className="form-group">
-        <label htmlFor="peselOrdId">PESEL lub ID *</label>
-        <input
-          type="text"
-          id="peselOrdId"
+        <TextField
+          label="PESEL lub ID"
           name="peselOrdId"
           value={formData.peselOrdId}
           onChange={onChange}
           required
-          aria-required="true"
+          fullWidth
           disabled={disabled}
         />
-      </div>
-      <div className="form-group">
-        <label htmlFor="phone">Telefon *</label>
-        <input
-          type="tel"
-          id="phone"
+        <TextField
+          label="Telefon"
           name="phone"
+          type="tel"
           value={formData.phone}
           onChange={onChange}
           required
-          aria-required="true"
-          autoComplete="tel"
+          fullWidth
           disabled={disabled}
+          autoComplete="tel"
         />
-      </div>
-      <div className="form-group">
-        <label htmlFor="email">Email *</label>
-        <input
-          type="email"
-          id="email"
+        <TextField
+          label="Email"
           name="email"
+          type="email"
           value={formData.email}
           onChange={onChange}
           required
-          aria-required="true"
-          autoComplete="email"
+          fullWidth
           disabled={disabled}
+          autoComplete="email"
         />
-      </div>
-      <div className="form-group">
-        <label htmlFor="address">Adres *</label>
-        <input
-          type="text"
-          id="address"
+        <TextField
+          label="Adres"
           name="address"
           value={formData.address}
           onChange={onChange}
           required
-          aria-required="true"
-          autoComplete="street-address"
+          fullWidth
           disabled={disabled}
+          autoComplete="street-address"
         />
-      </div>
-    </section>
+      </Box>
+    </Box>
   );
 }
 

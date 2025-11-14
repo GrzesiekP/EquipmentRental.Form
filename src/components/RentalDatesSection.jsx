@@ -1,3 +1,5 @@
+import { TextField, Typography, Box, Grid, IconButton, InputAdornment } from '@mui/material';
+import { ArrowDropUp, ArrowDropDown } from '@mui/icons-material';
 import { incrementTime, decrementTime } from '../utils';
 
 function RentalDatesSection({ formData, onChange, disabled }) {
@@ -12,115 +14,127 @@ function RentalDatesSection({ formData, onChange, disabled }) {
   };
 
   return (
-    <section className="rental-dates">
-      <h2>Termin wynajmu</h2>
-      <h3>Odbiór</h3>
-      <div className="date-time-row">
-        <div className="form-group">
-          <label htmlFor="pickupDate">Data odbioru *</label>
-          <input
-            type="date"
-            id="pickupDate"
+    <Box sx={{ mb: 4 }}>
+      <Typography variant="h5" component="h2" gutterBottom>
+        Termin wynajmu
+      </Typography>
+      
+      <Typography variant="h6" component="h3" sx={{ mt: 2, mb: 2 }}>
+        Odbiór
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Data odbioru"
             name="pickupDate"
+            type="date"
             value={formData.pickupDate}
             onChange={onChange}
             required
-            aria-required="true"
+            fullWidth
             disabled={disabled}
+            InputLabelProps={{ shrink: true }}
           />
-        </div>
-        <div className="form-group">
-          <label htmlFor="pickupHour">Godzina odbioru *</label>
-          <div className="input-with-spinner">
-            <input
-              type="time"
-              id="pickupHour"
-              name="pickupHour"
-              value={formData.pickupHour}
-              onChange={onChange}
-              required
-              aria-required="true"
-              disabled={disabled}
-            />
-            <div className="spinner-buttons">
-              <button 
-                type="button" 
-                className="spinner-btn spinner-up" 
-                aria-label="Zwiększ godzinę" 
-                tabIndex="-1"
-                onClick={() => handleTimeIncrement('pickupHour')}
-                disabled={disabled}
-              >
-                <span aria-hidden="true">▲</span>
-              </button>
-              <button 
-                type="button" 
-                className="spinner-btn spinner-down" 
-                aria-label="Zmniejsz godzinę" 
-                tabIndex="-1"
-                onClick={() => handleTimeDecrement('pickupHour')}
-                disabled={disabled}
-              >
-                <span aria-hidden="true">▼</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <h3>Zwrot</h3>
-      <div className="date-time-row">
-        <div className="form-group">
-          <label htmlFor="returnDate">Data zwrotu *</label>
-          <input
-            type="date"
-            id="returnDate"
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Godzina odbioru"
+            name="pickupHour"
+            type="time"
+            value={formData.pickupHour}
+            onChange={onChange}
+            required
+            fullWidth
+            disabled={disabled}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleTimeIncrement('pickupHour')}
+                      disabled={disabled}
+                      aria-label="Zwiększ godzinę"
+                      sx={{ p: 0, height: '20px' }}
+                    >
+                      <ArrowDropUp fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleTimeDecrement('pickupHour')}
+                      disabled={disabled}
+                      aria-label="Zmniejsz godzinę"
+                      sx={{ p: 0, height: '20px' }}
+                    >
+                      <ArrowDropDown fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
+      </Grid>
+
+      <Typography variant="h6" component="h3" sx={{ mt: 3, mb: 2 }}>
+        Zwrot
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Data zwrotu"
             name="returnDate"
+            type="date"
             value={formData.returnDate}
             onChange={onChange}
             required
-            aria-required="true"
+            fullWidth
             disabled={disabled}
+            InputLabelProps={{ shrink: true }}
           />
-        </div>
-        <div className="form-group">
-          <label htmlFor="returnHour">Godzina zwrotu *</label>
-          <div className="input-with-spinner">
-            <input
-              type="time"
-              id="returnHour"
-              name="returnHour"
-              value={formData.returnHour}
-              onChange={onChange}
-              required
-              aria-required="true"
-              disabled={disabled}
-            />
-            <div className="spinner-buttons">
-              <button 
-                type="button" 
-                className="spinner-btn spinner-up" 
-                aria-label="Zwiększ godzinę" 
-                tabIndex="-1"
-                onClick={() => handleTimeIncrement('returnHour')}
-                disabled={disabled}
-              >
-                <span aria-hidden="true">▲</span>
-              </button>
-              <button 
-                type="button" 
-                className="spinner-btn spinner-down" 
-                aria-label="Zmniejsz godzinę" 
-                tabIndex="-1"
-                onClick={() => handleTimeDecrement('returnHour')}
-                disabled={disabled}
-              >
-                <span aria-hidden="true">▼</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Godzina zwrotu"
+            name="returnHour"
+            type="time"
+            value={formData.returnHour}
+            onChange={onChange}
+            required
+            fullWidth
+            disabled={disabled}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleTimeIncrement('returnHour')}
+                      disabled={disabled}
+                      aria-label="Zwiększ godzinę"
+                      sx={{ p: 0, height: '20px' }}
+                    >
+                      <ArrowDropUp fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleTimeDecrement('returnHour')}
+                      disabled={disabled}
+                      aria-label="Zmniejsz godzinę"
+                      sx={{ p: 0, height: '20px' }}
+                    >
+                      <ArrowDropDown fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
 
