@@ -7,9 +7,11 @@
     <title>Formularz wynajmu sprzętu</title>
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="css/style.css">
+    <!-- Vue.js 3 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div id="app" class="container">
         <header>
             <h1>Formularz wynajmu sprzętu</h1>
         </header>
@@ -22,7 +24,7 @@
                 <p>Grzegorz Pawłowski,<br>Wypożyczalnia Kaukaz</p>
             </div>
             
-            <form id="equipmentForm" novalidate>
+            <form id="equipmentForm" @submit.prevent="handleFormSubmit" novalidate>
                 <!-- Personal Information Section -->
                 <section class="personal-info">
                     <h2>Dane osobowe</h2>
@@ -32,6 +34,7 @@
                             type="text"
                             id="name"
                             name="name"
+                            v-model="formData.name"
                             required
                             aria-required="true"
                             autocomplete="given-name">
@@ -42,6 +45,7 @@
                             type="text"
                             id="surname"
                             name="surname"
+                            v-model="formData.surname"
                             required
                             aria-required="true"
                             autocomplete="family-name">
@@ -52,6 +56,7 @@
                             type="text"
                             id="peselOrdId"
                             name="peselOrdId"
+                            v-model="formData.peselOrdId"
                             required
                             aria-required="true">
                     </div>
@@ -61,6 +66,7 @@
                             type="tel"
                             id="phone"
                             name="phone"
+                            v-model="formData.phone"
                             required
                             aria-required="true"
                             autocomplete="tel">
@@ -71,6 +77,7 @@
                             type="email"
                             id="email"
                             name="email"
+                            v-model="formData.email"
                             required
                             aria-required="true"
                             autocomplete="email">
@@ -81,6 +88,7 @@
                             type="text"
                             id="address"
                             name="address"
+                            v-model="formData.address"
                             required
                             aria-required="true"
                             autocomplete="street-address">
@@ -98,6 +106,7 @@
                                 type="date"
                                 id="pickupDate"
                                 name="pickupDate"
+                                v-model="formData.pickupDate"
                                 required
                                 aria-required="true">
                         </div>
@@ -108,13 +117,14 @@
                                     type="time"
                                     id="pickupHour"
                                     name="pickupHour"
+                                    v-model="formData.pickupHour"
                                     required
                                     aria-required="true">
                                 <div class="spinner-buttons">
-                                    <button type="button" class="spinner-btn spinner-up" aria-label="Zwiększ godzinę" tabindex="-1">
+                                    <button type="button" @click="incrementTime('pickupHour')" class="spinner-btn spinner-up" aria-label="Zwiększ godzinę" tabindex="-1">
                                         <span aria-hidden="true">▲</span>
                                     </button>
-                                    <button type="button" class="spinner-btn spinner-down" aria-label="Zmniejsz godzinę" tabindex="-1">
+                                    <button type="button" @click="decrementTime('pickupHour')" class="spinner-btn spinner-down" aria-label="Zmniejsz godzinę" tabindex="-1">
                                         <span aria-hidden="true">▼</span>
                                     </button>
                                 </div>
@@ -129,6 +139,7 @@
                                 type="date"
                                 id="returnDate"
                                 name="returnDate"
+                                v-model="formData.returnDate"
                                 required
                                 aria-required="true">
                         </div>
@@ -139,13 +150,14 @@
                                     type="time"
                                     id="returnHour"
                                     name="returnHour"
+                                    v-model="formData.returnHour"
                                     required
                                     aria-required="true">
                                 <div class="spinner-buttons">
-                                    <button type="button" class="spinner-btn spinner-up" aria-label="Zwiększ godzinę" tabindex="-1">
+                                    <button type="button" @click="incrementTime('returnHour')" class="spinner-btn spinner-up" aria-label="Zwiększ godzinę" tabindex="-1">
                                         <span aria-hidden="true">▲</span>
                                     </button>
-                                    <button type="button" class="spinner-btn spinner-down" aria-label="Zmniejsz godzinę" tabindex="-1">
+                                    <button type="button" @click="decrementTime('returnHour')" class="spinner-btn spinner-down" aria-label="Zmniejsz godzinę" tabindex="-1">
                                         <span aria-hidden="true">▼</span>
                                     </button>
                                 </div>
@@ -165,21 +177,54 @@
                             <div class="col-quantity" role="columnheader">Ilość</div>
                             <div class="col-notes" role="columnheader">Uwagi</div>
                         </div>
-                        <!-- Equipment rows will be generated dynamically -->
+                        <!-- Equipment rows -->
+                        <div v-for="item in equipmentItems" :key="item" class="equipment-row" :data-equipment="item" role="row">
+                            <div class="col-equipment" role="cell">{{ item }}</div>
+                            <div class="col-quantity" role="cell">
+                                <label :for="'quantity-' + equipmentNameToId(item)" class="sr-only">Ilość - {{ item }}</label>
+                                <div class="input-with-spinner">
+                                    <input
+                                        type="number"
+                                        :id="'quantity-' + equipmentNameToId(item)"
+                                        :name="'quantity-' + equipmentNameToId(item)"
+                                        v-model.number="formData.equipment[equipmentNameToId(item)].quantity"
+                                        min="0"
+                                        step="1"
+                                        :aria-label="'Ilość - ' + item">
+                                    <div class="spinner-buttons">
+                                        <button type="button" @click="incrementQuantity(equipmentNameToId(item))" class="spinner-btn spinner-up" aria-label="Zwiększ ilość" tabindex="-1">
+                                            <span aria-hidden="true">▲</span>
+                                        </button>
+                                        <button type="button" @click="decrementQuantity(equipmentNameToId(item))" class="spinner-btn spinner-down" aria-label="Zmniejsz ilość" tabindex="-1">
+                                            <span aria-hidden="true">▼</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-notes" role="cell">
+                                <label :for="'notes-' + equipmentNameToId(item)" class="sr-only">Uwagi - {{ item }}</label>
+                                <input
+                                    type="text"
+                                    :id="'notes-' + equipmentNameToId(item)"
+                                    :name="'notes-' + equipmentNameToId(item)"
+                                    v-model="formData.equipment[equipmentNameToId(item)].notes"
+                                    :aria-label="'Uwagi - ' + item">
+                            </div>
+                        </div>
                     </div>
                 </section>
                 
                 <!-- Feedback Message Area -->
-                <div id="feedbackMessage" class="feedback hidden" role="alert" aria-live="polite"></div>
+                <div id="feedbackMessage" class="feedback" :class="{ hidden: !feedback.message, success: feedback.type === 'success', error: feedback.type === 'error' }" role="alert" aria-live="polite">{{ feedback.message }}</div>
                 
                 <!-- Submit Button -->
                 <div class="form-actions">
-                    <button type="submit" id="submitBtn">Wyślij</button>
+                    <button type="submit" id="submitBtn" :disabled="isLoading">{{ isLoading ? 'Wysyłanie...' : 'Wyślij' }}</button>
                 </div>
             </form>
             
-            <!-- Success Page (hidden by default) -->
-            <div id="successPage" class="success-page hidden">
+            <!-- Success Page -->
+            <div id="successPage" class="success-page" :class="{ hidden: !showSuccessPage }">
                 <div class="success-content">
                     <h2>Formularz wysłany pomyślnie</h2>
                     <p>Formularz wysłany pomyślnie. Prosimy czekać na wiadomość z potwierdzeniem rezerwacji.</p>
@@ -193,6 +238,6 @@
     </div>
     
     <script src="js/settings.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/vue-app.js"></script>
 </body>
 </html>

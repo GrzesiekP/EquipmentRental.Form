@@ -1,30 +1,27 @@
 # Equipment Rental Form
 
-A modern, responsive web application for managing equipment rental requests. This application provides an intuitive interface for users to submit rental requests with automatic date validation, cost calculation, and formatted output.
+A modern, responsive web application for managing equipment rental requests built with Vue.js 3. This application provides an intuitive interface for users to submit rental requests with automatic date validation, and formatted output.
 
 ## Features
 
+- **Vue.js 3**: Built with Vue.js 3 for reactive, component-based architecture
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
-- **Client Information**: Capture essential customer details (name, email, phone)
-- **Equipment Selection**: Choose from various equipment types with automatic cost calculation
+- **Client Information**: Capture essential customer details (name, email, phone, address, PESEL/ID)
+- **Equipment Selection**: Choose from various equipment types with quantity controls
 - **Date Validation**: Prevents invalid rental periods (rental date cannot be before pickup date)
-- **Automatic Calculations**: 
-  - Daily rental cost based on equipment type
-  - Total rental days calculation
-  - Overall rental cost computation
 - **Form Validation**: Comprehensive client-side validation with helpful error messages
 - **Modern UI**: Clean interface with smooth animations and user-friendly design
-- **Export Functionality**: Generate formatted rental summary
+- **Export Functionality**: Submits formatted rental data to webhook endpoint
 
 ## Demo
 
-Visit the live application: [https://&lt;your-username&gt;.github.io/&lt;repository-name&gt;/](https://github.com/&lt;your-username&gt;/&lt;repository-name&gt;)
+Visit the live application: [https://grzesiekp.github.io/EquipmentRental.Form/](https://grzesiekp.github.io/EquipmentRental.Form/)
 
 ## Technologies Used
 
+- **Vue.js 3**: Progressive JavaScript framework for building user interfaces
 - **HTML5**: Semantic markup structure
 - **CSS3**: Modern styling with CSS Grid, Flexbox, and animations
-- **Vanilla JavaScript**: Pure JavaScript for form handling and validation
 - **GitHub Pages**: Automated deployment via GitHub Actions
 
 ## Project Structure
@@ -37,8 +34,11 @@ EquipmentRental.Form/
 ├── css/
 │   └── style.css              # Application styles
 ├── js/
-│   └── app.js                 # Application logic
-├── index.html                 # Main HTML file
+│   ├── settings.js            # Configuration (equipment items, webhook URL)
+│   └── vue-app.js             # Vue.js application logic
+├── assets/
+│   └── logo.png               # Application logo
+├── index.html                 # Main HTML file with Vue.js template
 ├── ARCHITECTURE.md            # Technical architecture documentation
 └── README.md                  # This file
 ```
@@ -49,13 +49,13 @@ EquipmentRental.Form/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/<your-username>/<repository-name>.git
-   cd <repository-name>
+   git clone https://github.com/GrzesiekP/EquipmentRental.Form.git
+   cd EquipmentRental.Form
    ```
 
 2. **Open the application**
    - Simply open [`index.html`](index.html:1) in your web browser
-   - No build process or dependencies required!
+   - Note: Vue.js is loaded from CDN, so an internet connection is required
    - For development, you can use a local server:
      ```bash
      # Using Python 3
@@ -68,6 +68,11 @@ EquipmentRental.Form/
      npx http-server
      ```
    - Then navigate to `http://localhost:8000`
+
+3. **Configuration**
+   - Edit `js/settings.js` to configure:
+     - Webhook URL for form submission
+     - Equipment items list
 
 ### Deployment to GitHub Pages
 
@@ -115,20 +120,20 @@ The deployment workflow:
    - Enter your phone number
 
 2. **Equipment Selection**:
-   - Choose the type of equipment you need
-   - Equipment costs per day:
-     - Excavator: $500/day
-     - Bulldozer: $600/day
-     - Crane: $800/day
-     - Forklift: $150/day
-     - Concrete Mixer: $100/day
+   - Choose equipment and specify quantity using the spinner controls
+   - Equipment items are configured in `js/settings.js`
 
 3. **Rental Period**:
    - **Pickup Date**: Select when you want to pick up the equipment
+   - **Pickup Time**: Select the pickup time (with 15-minute increment spinners)
    - **Return Date**: Select when you plan to return it
+   - **Return Time**: Select the return time (with 15-minute increment spinners)
    - The form automatically validates that the return date is after the pickup date
 
-4. **Submit**:
+4. **Additional Information**:
+   - Add notes for specific equipment items (e.g., boot size for crampons)
+
+5. **Submit**:
    - Review your information
    - Click "Submit Rental Request"
    - View the formatted summary with total cost
@@ -139,19 +144,23 @@ The deployment workflow:
 ## Form Validation
 
 The application includes comprehensive validation:
-- All fields are required
+- All required fields must be filled
 - Email must be in valid format
-- Phone number must contain at least 10 digits
-- Return date must be after pickup date
+- Phone number is required
+- PESEL or ID is required
+- Dates cannot be in the past
+- Return date must be after or equal to pickup date
+- Time fields are required
 - Helpful error messages guide you to correct any issues
 
 ## Cost Calculation
 
-The application automatically calculates:
-- **Number of rental days**: (Return Date - Pickup Date)
-- **Total cost**: Daily Rate × Number of Days
+Equipment rental data is submitted to a webhook endpoint for processing. The webhook handles:
+- Equipment availability checking
+- Cost calculation based on rental duration
+- Confirmation email generation
 
-Example: Renting a Crane for 5 days = $800/day × 5 days = $4,000
+Configuration for the webhook URL can be found in `js/settings.js`.
 
 ## Browser Support
 
@@ -181,4 +190,4 @@ For questions or feedback, please open an issue in the GitHub repository.
 
 ---
 
-**Built with ❤️ using vanilla HTML, CSS, and JavaScript**
+**Built with Vue.js 3** ❤️
