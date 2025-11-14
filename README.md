@@ -58,6 +58,8 @@ EquipmentRental.Form/
 - Node.js 20.x or later
 - npm 10.x or later
 
+> **Important**: If you have the old deprecated `angular-cli` package installed globally, you may encounter build errors. This project uses the modern `@angular/cli` which is included in the project dependencies. Always use `npm run build` instead of running `ng build` directly.
+
 ### Local Development
 
 1. **Clone the repository**
@@ -82,6 +84,33 @@ EquipmentRental.Form/
    npm run build
    ```
    The build artifacts will be stored in the `dist/equipment-rental-angular/browser/` directory.
+
+### Troubleshooting
+
+**Error: "ReferenceError: primordials is not defined"**
+
+This error occurs when using an old global installation of `angular-cli` with Node.js 12+. To fix:
+
+1. **Use npm scripts** (recommended):
+   ```bash
+   npm run build   # Instead of: ng build
+   npm start       # Instead of: ng serve
+   ```
+
+2. **Or uninstall the old CLI and use the local version**:
+   ```bash
+   npm uninstall -g angular-cli
+   npm uninstall -g @angular/cli
+   npx @angular/cli build  # Use npx to run the local CLI
+   ```
+
+3. **Or update to the modern CLI globally**:
+   ```bash
+   npm uninstall -g angular-cli
+   npm install -g @angular/cli@latest
+   ```
+
+The project is configured with Angular 20 and all dependencies are included locally. Always use `npm run` commands to ensure you're using the correct versions.
 
 ### Deployment to GitHub Pages
 
