@@ -6,8 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatTimepickerModule } from '@angular/material/timepicker';
+import { MAT_DATE_LOCALE, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_TIMEPICKER_CONFIG, MatTimepickerModule } from '@angular/material/timepicker';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -18,7 +18,7 @@ import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.mod
 @Component({
   selector: 'app-equipment-rental-form',
   imports: [
-    CommonModule, 
+    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -31,7 +31,18 @@ import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.mod
     MatCardModule
   ],
   templateUrl: './equipment-rental-form.component.html',
-  styleUrl: './equipment-rental-form.component.css'
+  styleUrl: './equipment-rental-form.component.css',
+  providers: [
+    {
+      provide: MAT_TIMEPICKER_CONFIG,
+      useValue: {interval: '30 minutes'}
+    },
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'fr-FR'
+    },
+    provideNativeDateAdapter()
+  ]
 })
 export class EquipmentRentalFormComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -62,7 +73,7 @@ export class EquipmentRentalFormComponent implements OnInit {
       returnDate: ['', Validators.required],
       returnHour: ['16:00', Validators.required],
       equipment: this.fb.array(
-        this.settings.equipmentItems.map(() => 
+        this.settings.equipmentItems.map(() =>
           this.fb.group({
             quantity: [0, [Validators.min(0)]],
             notes: ['']
@@ -80,11 +91,11 @@ export class EquipmentRentalFormComponent implements OnInit {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
-    
+
     const dayAfterTomorrow = new Date();
     dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
     dayAfterTomorrow.setHours(0, 0, 0, 0);
-    
+
     this.rentalForm.patchValue({
       pickupDate: tomorrow,
       returnDate: dayAfterTomorrow
@@ -121,8 +132,8 @@ export class EquipmentRentalFormComponent implements OnInit {
     }
 
     // Validate dates
-    const pickupDate = this.rentalForm.value.pickupDate instanceof Date 
-      ? this.rentalForm.value.pickupDate 
+    const pickupDate = this.rentalForm.value.pickupDate instanceof Date
+      ? this.rentalForm.value.pickupDate
       : new Date(this.rentalForm.value.pickupDate);
     const returnDate = this.rentalForm.value.returnDate instanceof Date
       ? this.rentalForm.value.returnDate
@@ -179,10 +190,10 @@ export class EquipmentRentalFormComponent implements OnInit {
     });
 
     // Format dates from Date objects to strings
-    const pickupDate = formValue.pickupDate instanceof Date 
+    const pickupDate = formValue.pickupDate instanceof Date
       ? this.formatDateInput(formValue.pickupDate)
       : formValue.pickupDate;
-    
+
     const returnDate = formValue.returnDate instanceof Date
       ? this.formatDateInput(formValue.returnDate)
       : formValue.returnDate;
@@ -206,7 +217,7 @@ export class EquipmentRentalFormComponent implements OnInit {
   private showFeedback(message: string, type: 'success' | 'error'): void {
     this.feedbackMessage.set(message);
     this.feedbackType.set(type);
-    
+
     setTimeout(() => {
       this.feedbackMessage.set('');
     }, 5000);
