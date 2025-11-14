@@ -2,13 +2,32 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { SettingsService } from '../../services/settings.service';
 import { FormSubmissionService } from '../../services/form-submission.service';
 import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.model';
 
 @Component({
   selector: 'app-equipment-rental-form',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTableModule,
+    MatIconModule,
+    MatCardModule
+  ],
   templateUrl: './equipment-rental-form.component.html',
   styleUrl: './equipment-rental-form.component.css'
 })
@@ -58,13 +77,15 @@ export class EquipmentRentalFormComponent implements OnInit {
   private setDefaultDates(): void {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
     
     const dayAfterTomorrow = new Date();
     dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+    dayAfterTomorrow.setHours(0, 0, 0, 0);
     
     this.rentalForm.patchValue({
-      pickupDate: this.formatDateInput(tomorrow),
-      returnDate: this.formatDateInput(dayAfterTomorrow)
+      pickupDate: tomorrow,
+      returnDate: dayAfterTomorrow
     });
   }
 
@@ -131,11 +152,16 @@ export class EquipmentRentalFormComponent implements OnInit {
     }
 
     // Validate dates
-    const pickupDate = new Date(this.rentalForm.value.pickupDate);
-    const returnDate = new Date(this.rentalForm.value.returnDate);
+    const pickupDate = this.rentalForm.value.pickupDate instanceof Date 
+      ? this.rentalForm.value.pickupDate 
+      : new Date(this.rentalForm.value.pickupDate);
+    const returnDate = this.rentalForm.value.returnDate instanceof Date
+      ? this.rentalForm.value.returnDate
+      : new Date(this.rentalForm.value.returnDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     pickupDate.setHours(0, 0, 0, 0);
+    returnDate.setHours(0, 0, 0, 0);
 
     if (pickupDate < today) {
       this.showFeedback('Data odbioru nie może być w przeszłości', 'error');
@@ -180,6 +206,15 @@ export class EquipmentRentalFormComponent implements OnInit {
       }
     });
 
+    // Format dates from Date objects to strings
+    const pickupDate = formValue.pickupDate instanceof Date 
+      ? this.formatDateInput(formValue.pickupDate)
+      : formValue.pickupDate;
+    
+    const returnDate = formValue.returnDate instanceof Date
+      ? this.formatDateInput(formValue.returnDate)
+      : formValue.returnDate;
+
     return {
       submitDate: this.formSubmissionService.formatSubmitDate(new Date()),
       name: formValue.name.trim(),
@@ -188,8 +223,8 @@ export class EquipmentRentalFormComponent implements OnInit {
       phone: formValue.phone.trim(),
       email: formValue.email.trim(),
       address: formValue.address.trim(),
-      pickupDate: formValue.pickupDate,
-      returnDate: formValue.returnDate,
+      pickupDate: pickupDate,
+      returnDate: returnDate,
       pickupHour: this.formSubmissionService.formatTime(formValue.pickupHour),
       returnHour: this.formSubmissionService.formatTime(formValue.returnHour),
       equipment: equipment

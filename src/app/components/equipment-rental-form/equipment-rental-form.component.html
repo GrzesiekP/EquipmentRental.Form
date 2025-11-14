@@ -5,201 +5,196 @@
   
   <main>
     @if (!showSuccess()) {
-      <div class="intro-text">
-        <p>Dzień dobry,</p>
-        <p>w celu dokonania rezerwacji sprzętu proszę wypełnić poniższy formularz - są to dane potrzebne do zawarcia umowy wypożyczenia.</p>
-        <p>Dostępny sprzęt i cennik: <a href="https://kaukazwypozyczalnia.pl/cennik" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/cennik</a></p>
-        <p>Grzegorz Pawłowski,<br>Wypożyczalnia Kaukaz</p>
-      </div>
+      <mat-card class="intro-card">
+        <mat-card-content>
+          <p>Dzień dobry,</p>
+          <p>w celu dokonania rezerwacji sprzętu proszę wypełnić poniższy formularz - są to dane potrzebne do zawarcia umowy wypożyczenia.</p>
+          <p>Dostępny sprzęt i cennik: <a href="https://kaukazwypozyczalnia.pl/cennik" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/cennik</a></p>
+          <p>Grzegorz Pawłowski,<br>Wypożyczalnia Kaukaz</p>
+        </mat-card-content>
+      </mat-card>
       
       <form [formGroup]="rentalForm" (ngSubmit)="onSubmit()" novalidate>
         <!-- Personal Information Section -->
-        <section class="personal-info">
-          <h2>Dane osobowe</h2>
-          <div class="form-group">
-            <label for="name">Imię *</label>
-            <input
-              type="text"
-              id="name"
-              formControlName="name"
-              autocomplete="given-name"
-              [class.error]="rentalForm.get('name')?.invalid && rentalForm.get('name')?.touched">
-          </div>
-          <div class="form-group">
-            <label for="surname">Nazwisko *</label>
-            <input
-              type="text"
-              id="surname"
-              formControlName="surname"
-              autocomplete="family-name"
-              [class.error]="rentalForm.get('surname')?.invalid && rentalForm.get('surname')?.touched">
-          </div>
-          <div class="form-group">
-            <label for="peselOrdId">PESEL lub ID *</label>
-            <input
-              type="text"
-              id="peselOrdId"
-              formControlName="peselOrdId"
-              [class.error]="rentalForm.get('peselOrdId')?.invalid && rentalForm.get('peselOrdId')?.touched">
-          </div>
-          <div class="form-group">
-            <label for="phone">Telefon *</label>
-            <input
-              type="tel"
-              id="phone"
-              formControlName="phone"
-              autocomplete="tel"
-              [class.error]="rentalForm.get('phone')?.invalid && rentalForm.get('phone')?.touched">
-          </div>
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input
-              type="email"
-              id="email"
-              formControlName="email"
-              autocomplete="email"
-              [class.error]="rentalForm.get('email')?.invalid && rentalForm.get('email')?.touched">
-          </div>
-          <div class="form-group">
-            <label for="address">Adres *</label>
-            <input
-              type="text"
-              id="address"
-              formControlName="address"
-              autocomplete="street-address"
-              [class.error]="rentalForm.get('address')?.invalid && rentalForm.get('address')?.touched">
-          </div>
-        </section>
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Dane osobowe</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Imię</mat-label>
+                <input matInput formControlName="name" autocomplete="given-name" required>
+                <mat-error *ngIf="rentalForm.get('name')?.hasError('required')">Imię jest wymagane</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nazwisko</mat-label>
+                <input matInput formControlName="surname" autocomplete="family-name" required>
+                <mat-error *ngIf="rentalForm.get('surname')?.hasError('required')">Nazwisko jest wymagane</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>PESEL lub ID</mat-label>
+                <input matInput formControlName="peselOrdId" required>
+                <mat-error *ngIf="rentalForm.get('peselOrdId')?.hasError('required')">PESEL lub ID jest wymagane</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Telefon</mat-label>
+                <input matInput formControlName="phone" type="tel" autocomplete="tel" required>
+                <mat-error *ngIf="rentalForm.get('phone')?.hasError('required')">Telefon jest wymagany</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" type="email" autocomplete="email" required>
+                <mat-error *ngIf="rentalForm.get('email')?.hasError('required')">Email jest wymagany</mat-error>
+                <mat-error *ngIf="rentalForm.get('email')?.hasError('email')">Nieprawidłowy format email</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Adres</mat-label>
+                <input matInput formControlName="address" autocomplete="street-address" required>
+                <mat-error *ngIf="rentalForm.get('address')?.hasError('required')">Adres jest wymagany</mat-error>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
         
         <!-- Rental Dates Section -->
-        <section class="rental-dates">
-          <h2>Termin wynajmu</h2>
-          <h3>Odbiór</h3>
-          <div class="date-time-row">
-            <div class="form-group">
-              <label for="pickupDate">Data odbioru *</label>
-              <input
-                type="date"
-                id="pickupDate"
-                formControlName="pickupDate"
-                [class.error]="rentalForm.get('pickupDate')?.invalid && rentalForm.get('pickupDate')?.touched">
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Termin wynajmu</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <h3>Odbiór</h3>
+            <div class="date-time-row">
+              <mat-form-field appearance="outline" class="date-field">
+                <mat-label>Data odbioru</mat-label>
+                <input matInput [matDatepicker]="pickupDatePicker" formControlName="pickupDate" required>
+                <mat-datepicker-toggle matIconSuffix [for]="pickupDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #pickupDatePicker></mat-datepicker>
+                <mat-error *ngIf="rentalForm.get('pickupDate')?.hasError('required')">Data odbioru jest wymagana</mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Godzina odbioru</mat-label>
+                <input matInput type="time" formControlName="pickupHour" required>
+                <button mat-icon-button matSuffix type="button" (click)="incrementTime('pickupHour')">
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button mat-icon-button matSuffix type="button" (click)="decrementTime('pickupHour')">
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <mat-error *ngIf="rentalForm.get('pickupHour')?.hasError('required')">Godzina odbioru jest wymagana</mat-error>
+              </mat-form-field>
             </div>
-            <div class="form-group">
-              <label for="pickupHour">Godzina odbioru *</label>
-              <div class="input-with-spinner">
-                <input
-                  type="time"
-                  id="pickupHour"
-                  formControlName="pickupHour"
-                  [class.error]="rentalForm.get('pickupHour')?.invalid && rentalForm.get('pickupHour')?.touched">
-                <div class="spinner-buttons">
-                  <button type="button" class="spinner-btn spinner-up" (click)="incrementTime('pickupHour')" aria-label="Zwiększ godzinę" tabindex="-1">
-                    <span aria-hidden="true">▲</span>
-                  </button>
-                  <button type="button" class="spinner-btn spinner-down" (click)="decrementTime('pickupHour')" aria-label="Zmniejsz godzinę" tabindex="-1">
-                    <span aria-hidden="true">▼</span>
-                  </button>
-                </div>
-              </div>
+            
+            <h3>Zwrot</h3>
+            <div class="date-time-row">
+              <mat-form-field appearance="outline" class="date-field">
+                <mat-label>Data zwrotu</mat-label>
+                <input matInput [matDatepicker]="returnDatePicker" formControlName="returnDate" required>
+                <mat-datepicker-toggle matIconSuffix [for]="returnDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #returnDatePicker></mat-datepicker>
+                <mat-error *ngIf="rentalForm.get('returnDate')?.hasError('required')">Data zwrotu jest wymagana</mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Godzina zwrotu</mat-label>
+                <input matInput type="time" formControlName="returnHour" required>
+                <button mat-icon-button matSuffix type="button" (click)="incrementTime('returnHour')">
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button mat-icon-button matSuffix type="button" (click)="decrementTime('returnHour')">
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <mat-error *ngIf="rentalForm.get('returnHour')?.hasError('required')">Godzina zwrotu jest wymagana</mat-error>
+              </mat-form-field>
             </div>
-          </div>
-          <h3>Zwrot</h3>
-          <div class="date-time-row">
-            <div class="form-group">
-              <label for="returnDate">Data zwrotu *</label>
-              <input
-                type="date"
-                id="returnDate"
-                formControlName="returnDate"
-                [class.error]="rentalForm.get('returnDate')?.invalid && rentalForm.get('returnDate')?.touched">
-            </div>
-            <div class="form-group">
-              <label for="returnHour">Godzina zwrotu *</label>
-              <div class="input-with-spinner">
-                <input
-                  type="time"
-                  id="returnHour"
-                  formControlName="returnHour"
-                  [class.error]="rentalForm.get('returnHour')?.invalid && rentalForm.get('returnHour')?.touched">
-                <div class="spinner-buttons">
-                  <button type="button" class="spinner-btn spinner-up" (click)="incrementTime('returnHour')" aria-label="Zwiększ godzinę" tabindex="-1">
-                    <span aria-hidden="true">▲</span>
-                  </button>
-                  <button type="button" class="spinner-btn spinner-down" (click)="decrementTime('returnHour')" aria-label="Zmniejsz godzinę" tabindex="-1">
-                    <span aria-hidden="true">▼</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+          </mat-card-content>
+        </mat-card>
         
         <!-- Equipment Selection Section -->
-        <section class="equipment-section">
-          <h2>Wybór sprzętu</h2>
-          <p class="equipment-instructions">Proszę podać ilość rezerwowanego sprzętu. W uwagach można podać numer buta w przypadku rezerwacji raków lub raczków.</p>
-          <div class="equipment-table" role="table" aria-label="Tabela wyboru sprzętu">
-            <!-- Table header -->
-            <div class="equipment-row header" role="row">
-              <div class="col-equipment" role="columnheader">Sprzęt</div>
-              <div class="col-quantity" role="columnheader">Ilość</div>
-              <div class="col-notes" role="columnheader">Uwagi</div>
-            </div>
-            <!-- Equipment rows -->
-            @for (item of settings.equipmentItems; track item; let i = $index) {
-              <div class="equipment-row" role="row" formArrayName="equipment">
-                <div class="col-equipment" role="cell">{{ item }}</div>
-                <div class="col-quantity" role="cell" [formGroupName]="i">
-                  <div class="input-with-spinner">
-                    <input
-                      type="number"
-                      formControlName="quantity"
-                      min="0"
-                      step="1"
-                      [attr.aria-label]="'Ilość - ' + item">
-                    <div class="spinner-buttons">
-                      <button type="button" class="spinner-btn spinner-up" (click)="incrementQuantity(i)" aria-label="Zwiększ ilość" tabindex="-1">
-                        <span aria-hidden="true">▲</span>
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Wybór sprzętu</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="equipment-instructions">Proszę podać ilość rezerwowanego sprzętu. W uwagach można podać numer buta w przypadku rezerwacji raków lub raczków.</p>
+            
+            <div class="equipment-table">
+              <div class="equipment-header">
+                <div class="col-name">Sprzęt</div>
+                <div class="col-quantity">Ilość</div>
+                <div class="col-notes">Uwagi</div>
+              </div>
+              
+              @for (item of settings.equipmentItems; track item; let i = $index) {
+                <div class="equipment-row" formArrayName="equipment">
+                  <div class="col-name">{{ item }}</div>
+                  <div class="col-quantity" [formGroupName]="i">
+                    <mat-form-field appearance="outline" class="quantity-field">
+                      <input matInput type="number" formControlName="quantity" min="0">
+                      <button mat-icon-button matSuffix type="button" (click)="incrementQuantity(i)">
+                        <mat-icon>add</mat-icon>
                       </button>
-                      <button type="button" class="spinner-btn spinner-down" (click)="decrementQuantity(i)" aria-label="Zmniejsz ilość" tabindex="-1">
-                        <span aria-hidden="true">▼</span>
+                      <button mat-icon-button matSuffix type="button" (click)="decrementQuantity(i)">
+                        <mat-icon>remove</mat-icon>
                       </button>
-                    </div>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-notes" [formGroupName]="i">
+                    <mat-form-field appearance="outline" class="notes-field">
+                      <input matInput formControlName="notes" placeholder="Uwagi">
+                    </mat-form-field>
                   </div>
                 </div>
-                <div class="col-notes" role="cell" [formGroupName]="i">
-                  <input
-                    type="text"
-                    formControlName="notes"
-                    [attr.aria-label]="'Uwagi - ' + item">
-                </div>
-              </div>
-            }
-          </div>
-        </section>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
         
         <!-- Feedback Message Area -->
         @if (feedbackMessage()) {
-          <div class="feedback" [class.success]="feedbackType() === 'success'" [class.error]="feedbackType() === 'error'" role="alert" aria-live="polite">
-            {{ feedbackMessage() }}
-          </div>
+          <mat-card [class.success-message]="feedbackType() === 'success'" [class.error-message]="feedbackType() === 'error'" class="feedback-card">
+            <mat-card-content>
+              {{ feedbackMessage() }}
+            </mat-card-content>
+          </mat-card>
         }
         
         <!-- Submit Button -->
         <div class="form-actions">
-          <button type="submit" id="submitBtn" [disabled]="isSubmitting()">
+          <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting()">
             {{ isSubmitting() ? 'Wysyłanie...' : 'Wyślij' }}
           </button>
         </div>
       </form>
     } @else {
       <!-- Success Page -->
-      <div class="success-page">
-        <div class="success-content">
-          <h2>Formularz wysłany pomyślnie</h2>
+      <mat-card class="success-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="success-icon">check_circle</mat-icon>
+            Formularz wysłany pomyślnie
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
           <p>Formularz wysłany pomyślnie. Prosimy czekać na wiadomość z potwierdzeniem rezerwacji.</p>
-        </div>
-      </div>
+        </mat-card-content>
+      </mat-card>
     }
   </main>
   
