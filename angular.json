@@ -29,8 +29,10 @@
             ],
             "styles": [
               "src/material-theme.scss",
-              "src/styles.css"
-            ]
+              "src/styles.css",
+              "node_modules/material-icons/iconfont/material-icons.css"
+            ],
+            "inlineStyleLanguage": "scss"
           },
           "configurations": {
             "production": {
