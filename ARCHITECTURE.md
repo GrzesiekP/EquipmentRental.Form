@@ -1,13 +1,13 @@
-# Equipment Rental Form - Technical Architecture Specification
+# Equipment Rental Form - Technical Architecture Specification (Vue.js)
 
 ## Project Overview
-A simple, static web form for equipment rental that collects user information and equipment selections, then submits the data to a webhook endpoint. The form will be deployed via GitHub Pages.
+A responsive web form for equipment rental built with Vue.js 3, collecting user information and equipment selections, then submitting the data to a webhook endpoint. The form is deployed via GitHub Pages.
 
 ## Requirements Summary
-- **Technology Stack**: HTML5, CSS3, Vanilla JavaScript
+- **Technology Stack**: HTML5, CSS3, Vue.js 3 (CDN)
 - **Target Browsers**: Modern browsers (Chrome, Firefox, Safari, Edge - latest 2 versions)
-- **Responsiveness**: Basic mobile-friendly design
-- **Validation**: Minimal client-side validation
+- **Responsiveness**: Mobile-friendly design
+- **Validation**: Client-side validation with Vue.js
 - **Deployment**: GitHub Pages via GitHub Actions
 
 ---
@@ -16,11 +16,14 @@ A simple, static web form for equipment rental that collects user information an
 
 ```
 equipment-rental-form/
-├── index.html              # Main HTML file with form structure
+├── index.html              # Main HTML file with Vue.js template syntax
 ├── css/
 │   └── style.css          # All styling rules
 ├── js/
-│   └── app.js             # Form handling and submission logic
+│   ├── settings.js        # Configuration (equipment items, webhook URL)
+│   └── vue-app.js         # Vue.js 3 application logic
+├── assets/
+│   └── logo.png           # Application logo
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml     # GitHub Actions workflow for deployment
@@ -30,24 +33,33 @@ equipment-rental-form/
 ### File Descriptions
 
 **index.html**
-- Contains the complete form structure
+- Contains the complete form structure with Vue.js template syntax
+- Vue directives (v-model, v-for, @click, etc.)
 - Semantic HTML5 markup
 - Meta tags for responsive design
-- Links to CSS and JavaScript files
+- Links to Vue.js CDN, CSS and JavaScript files
 
 **css/style.css**
 - Form layout and styling
 - Responsive design rules
 - Input field styling
-- Table-like equipment list styling
+- Equipment table styling
 - Feedback message styling
+- Unchanged from original design
 
-**js/app.js**
+**js/settings.js**
+- Configuration object (SETTINGS)
+- Webhook URL
+- Equipment items list
+
+**js/vue-app.js**
+- Vue.js 3 application instance
+- Reactive data management
 - Form submission handler
 - Data collection and JSON formatting
 - Webhook POST request
 - User feedback (success/error messages)
-- Basic validation logic
+- Form validation logic
 
 **.github/workflows/deploy.yml**
 - GitHub Actions configuration
@@ -268,88 +280,107 @@ button {
 
 ---
 
-## 5. JavaScript Functionality Structure
+## 5. Vue.js Application Structure
 
-### JavaScript Organization (app.js)
+### Vue.js Organization (vue-app.js)
 
 ```javascript
-// 1. Constants
-const WEBHOOK_URL = 'https://tantunergon8n.duckdns.org/webhook-test/...';
-const EQUIPMENT_ITEMS = ['Raki', 'Kask', 'Czekan'];
-
-// 2. DOM Element References
-const form = document.getElementById('equipmentForm');
-const submitBtn = document.getElementById('submitBtn');
-const feedbackMessage = document.getElementById('feedbackMessage');
-
-// 3. Utility Functions
-function collectFormData() {
-    // Gather all form data and structure as JSON
-}
-
-function validateForm(data) {
-    // Basic validation checks
-}
-
-function showFeedback(message, type) {
-    // Display success/error message
-}
-
-function setLoadingState(isLoading) {
-    // Toggle loading state on submit button
-}
-
-// 4. API Functions
-async function submitToWebhook(data) {
-    // POST request to webhook
-}
-
-// 5. Event Handlers
-async function handleFormSubmit(event) {
-    event.preventDefault();
-    // Main submission logic
-}
-
-// 6. Initialization
-function init() {
-    // Set up event listeners
-    form.addEventListener('submit', handleFormSubmit);
-}
-
-// 7. Execute on DOM ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+// Check if Vue is loaded
+if (typeof Vue === 'undefined') {
+    // Handle error case
 } else {
-    init();
+    const { createApp } = Vue;
+    
+    createApp({
+        data() {
+            return {
+                // Configuration
+                webhookUrl: SETTINGS.webhookUrl,
+                equipmentItems: SETTINGS.equipmentItems,
+                
+                // Form data (reactive)
+                formData: { /* ... */ },
+                
+                // UI state
+                isLoading: false,
+                showSuccessPage: false,
+                feedback: { message: '', type: '' }
+            };
+        },
+        
+        mounted() {
+            // Initialize equipment data
+            // Set default dates
+        },
+        
+        methods: {
+            // Data formatting methods
+            equipmentNameToId() {},
+            formatDateInput() {},
+            formatSubmitDate() {},
+            formatTime() {},
+            
+            // Time manipulation methods
+            incrementTime() {},
+            decrementTime() {},
+            
+            // Quantity controls
+            incrementQuantity() {},
+            decrementQuantity() {},
+            
+            // Validation
+            validateForm() {},
+            
+            // Data collection
+            collectFormData() {},
+            
+            // API interaction
+            submitToWebhook() {},
+            
+            // UI feedback
+            showFeedback() {},
+            hideFeedback() {},
+            
+            // Form submission
+            handleFormSubmit() {}
+        }
+    }).mount('#app');
 }
 ```
 
-### Key JavaScript Functions
+### Key Vue.js Features Used
 
-**collectFormData()**
-- Extract values from all form fields
-- Build equipment array by iterating through equipment items
-- Add timestamp
-- Return structured JSON object
+**Reactive Data Binding (v-model)**
+- Two-way data binding for all form inputs
+- Automatic UI updates when data changes
 
-**validateForm(data)**
-- Check name and surname are not empty
-- Validate quantity values are non-negative integers
-- Return validation result with error messages if any
+**Event Handling (@click, @submit)**
+- Form submission with @submit.prevent
+- Button clicks for spinners and quantity controls
 
-**submitToWebhook(data)**
-- Use `fetch()` API to POST JSON data
-- Set appropriate headers (`Content-Type: application/json`)
-- Handle response (success/error)
-- Implement basic error handling
+**Conditional Rendering (:class)**
+- Dynamic CSS classes based on state
+- Show/hide feedback messages and success page
 
-**handleFormSubmit(event)**
-- Prevent default form submission
-- Collect and validate data
-- Show loading state
-- Submit to webhook
-- Display feedback message
-- Optionally reset form on success
+**List Rendering (v-for)**
+- Dynamic equipment rows generation
+- Iterates over equipmentItems array
+
+**Lifecycle Hooks (mounted)**
+- Initialize equipment data structure
+- Set default dates on component mount
+
+**Methods**
+- All business logic organized as Vue methods
+- Easy to test and maintain
+
+### Vue.js vs Vanilla JavaScript Benefits
+
+1. **Reactive Data**: Automatic UI updates without manual DOM manipulation
+2. **Template Syntax**: Cleaner, more readable HTML with directives
+3. **Component-Based**: Scalable architecture for future enhancements
+4. **State Management**: Centralized data management
+5. **Declarative**: What to render, not how to render it
 
 ---
 
@@ -437,10 +468,11 @@ jobs:
 - **Focus indicators**: Visible focus states on all interactive elements
 
 ### Browser Compatibility
+- **Vue.js 3**: Requires modern browsers with ES6 support
 - **Fetch API**: Supported in all modern browsers
 - **CSS Grid/Flexbox**: Widely supported
-- **ES6 JavaScript**: Use modern syntax (const, let, arrow functions, async/await)
 - **No polyfills needed**: Target is modern browsers only
+- **CDN Dependency**: Requires internet connection for Vue.js CDN
 
 ### Performance
 - **Minimal dependencies**: No external libraries or frameworks
@@ -460,9 +492,10 @@ jobs:
 
 ### Local Development
 1. Clone repository
-2. Open `index.html` directly in browser (no build step needed)
+2. Open `index.html` in browser (requires internet connection for Vue.js CDN)
 3. Use browser DevTools for debugging
-4. Test with browser's network throttling for slow connections
+4. Vue.js DevTools extension recommended for development
+5. Test with browser's network throttling for slow connections
 
 ### Testing Checklist
 - [ ] Form validates required fields
@@ -503,13 +536,14 @@ Potential improvements for future iterations:
 
 ## 10. Summary
 
-This architecture provides a clean, maintainable solution for a simple equipment rental form:
+This architecture provides a clean, maintainable solution for an equipment rental form using Vue.js 3:
 
-- **Simple**: Pure HTML/CSS/JS, no build tools or dependencies
-- **Maintainable**: Clear file structure and code organization
+- **Modern Framework**: Vue.js 3 for reactive, component-based architecture
+- **Simple**: CDN-based Vue.js, no build tools required
+- **Maintainable**: Clear separation of concerns and organized code structure
 - **Responsive**: Works on desktop and mobile devices
 - **Accessible**: Follows basic accessibility guidelines
 - **Deployable**: GitHub Actions workflow for automated deployment
-- **Extensible**: Easy to modify or add features in the future
+- **Extensible**: Easy to modify or add features with Vue.js components
 
-The implementation should be straightforward, with all files under 200 lines of code each, making it easy to understand, modify, and maintain.
+The Vue.js implementation provides better code organization, reactive data binding, and a more maintainable codebase compared to vanilla JavaScript, while maintaining the same visual appearance and functionality.

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Formularz wynajmu sprzętu górskiego">
+    <title>Formularz wynajmu sprzętu</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Formularz wynajmu sprzętu</h1>
+        </header>
+        
+        <main>
+            <div class="intro-text">
+                <p>Dzień dobry,</p>
+                <p>w celu dokonania rezerwacji sprzętu proszę wypełnić poniższy formularz - są to dane potrzebne do zawarcia umowy wypożyczenia.</p>
+                <p>Dostępny sprzęt i cennik: <a href="https://kaukazwypozyczalnia.pl/cennik" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/cennik</a></p>
+                <p>Grzegorz Pawłowski,<br>Wypożyczalnia Kaukaz</p>
+            </div>
+            
+            <form id="equipmentForm" novalidate>
+                <section class="personal-info">
+                    <h2>Dane osobowe</h2>
+                    <div class="form-group">
+                        <label for="name">Imię *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="surname">Nazwisko *</label>
+                        <input type="text" id="surname" name="surname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="peselOrdId">PESEL lub ID *</label>
+                        <input type="text" id="peselOrdId" name="peselOrdId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefon *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Adres *</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                </section>
+                
+                <section class="rental-dates">
+                    <h2>Termin wynajmu</h2>
+                    <h3>Odbiór</h3>
+                    <div class="date-time-row">
+                        <div class="form-group">
+                            <label for="pickupDate">Data odbioru *</label>
+                            <input type="date" id="pickupDate" name="pickupDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickupHour">Godzina odbioru *</label>
+                            <input type="time" id="pickupHour" name="pickupHour" required>
+                        </div>
+                    </div>
+                    <h3>Zwrot</h3>
+                    <div class="date-time-row">
+                        <div class="form-group">
+                            <label for="returnDate">Data zwrotu *</label>
+                            <input type="date" id="returnDate" name="returnDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="returnHour">Godzina zwrotu *</label>
+                            <input type="time" id="returnHour" name="returnHour" required>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="equipment-section">
+                    <h2>Wybór sprzętu</h2>
+                    <p class="equipment-instructions">Proszę podać ilość rezerwowanego sprzętu. W uwagach można podać numer buta w przypadku rezerwacji raków lub raczków.</p>
+                    <div class="equipment-table" id="equipmentTable" role="table">
+                        <div class="equipment-row header" role="row">
+                            <div class="col-equipment" role="columnheader">Sprzęt</div>
+                            <div class="col-quantity" role="columnheader">Ilość</div>
+                            <div class="col-notes" role="columnheader">Uwagi</div>
+                        </div>
+                    </div>
+                </section>
+                
+                <div id="feedbackMessage" class="feedback hidden" role="alert"></div>
+                
+                <div class="form-actions">
+                    <button type="submit" id="submitBtn">Wyślij</button>
+                </div>
+            </form>
+            
+            <div id="successPage" class="success-page hidden">
+                <div class="success-content">
+                    <h2>Formularz wysłany pomyślnie</h2>
+                    <p>Formularz wysłany pomyślnie. Prosimy czekać na wiadomość z potwierdzeniem rezerwacji.</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Formularz wynajmu sprzętu</p>
+        </footer>
+    </div>
+    
+    <script src="js/settings.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
