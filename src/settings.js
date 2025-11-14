@@ -1,8 +1,4 @@
-// ====================================
-// Equipment Rental Form - Settings
-// ====================================
-
-const SETTINGS = {
+export const SETTINGS = {
     webhookUrl: 'https://tantunergon8n.duckdns.org/webhook/submit-reservation',
     equipmentItems: [
         'Raki Koszykowe',
@@ -23,4 +19,3 @@ const SETTINGS = {
         'Plecak'
     ]
 };
-
