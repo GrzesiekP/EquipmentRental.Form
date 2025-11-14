@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -24,6 +25,7 @@ import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.mod
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatTimepickerModule,
     MatTableModule,
     MatIconModule,
     MatCardModule
@@ -110,39 +112,6 @@ export class EquipmentRentalFormComponent implements OnInit {
     }
   }
 
-  incrementTime(fieldName: 'pickupHour' | 'returnHour'): void {
-    const control = this.rentalForm.get(fieldName);
-    if (!control) return;
-
-    const timeValue = control.value || '00:00';
-    const [hours, minutes] = timeValue.split(':').map(Number);
-    let newMinutes = minutes + 15;
-    let newHours = hours;
-
-    if (newMinutes >= 60) {
-      newMinutes = 0;
-      newHours = (newHours + 1) % 24;
-    }
-
-    control.setValue(`${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`);
-  }
-
-  decrementTime(fieldName: 'pickupHour' | 'returnHour'): void {
-    const control = this.rentalForm.get(fieldName);
-    if (!control) return;
-
-    const timeValue = control.value || '00:00';
-    const [hours, minutes] = timeValue.split(':').map(Number);
-    let newMinutes = minutes - 15;
-    let newHours = hours;
-
-    if (newMinutes < 0) {
-      newMinutes = 45;
-      newHours = (newHours - 1 + 24) % 24;
-    }
-
-    control.setValue(`${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`);
-  }
 
   onSubmit(): void {
     if (this.rentalForm.invalid) {

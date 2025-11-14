@@ -2,7 +2,7 @@
   <header>
     <h1>Formularz wynajmu sprzętu</h1>
   </header>
-  
+
   <main>
     @if (!showSuccess()) {
       <mat-card class="intro-card">
@@ -13,7 +13,7 @@
           <p>Grzegorz Pawłowski,<br>Wypożyczalnia Kaukaz</p>
         </mat-card-content>
       </mat-card>
-      
+
       <form [formGroup]="rentalForm" (ngSubmit)="onSubmit()" novalidate class="rental-form" [class.form-submitting]="isSubmitting()">
         <!-- Loading Overlay -->
         @if (isSubmitting()) {
@@ -22,7 +22,7 @@
             <p>Wysyłanie formularza...</p>
           </div>
         }
-        
+
         <!-- Personal Information Section -->
         <mat-card class="section-card">
           <mat-card-header>
@@ -36,7 +36,7 @@
                 <mat-error *ngIf="rentalForm.get('name')?.hasError('required')">Imię jest wymagane</mat-error>
               </mat-form-field>
             </div>
-            
+
             <div class="form-row">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Nazwisko</mat-label>
@@ -44,7 +44,7 @@
                 <mat-error *ngIf="rentalForm.get('surname')?.hasError('required')">Nazwisko jest wymagane</mat-error>
               </mat-form-field>
             </div>
-            
+
             <div class="form-row">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>PESEL lub ID</mat-label>
@@ -52,7 +52,7 @@
                 <mat-error *ngIf="rentalForm.get('peselOrdId')?.hasError('required')">PESEL lub ID jest wymagane</mat-error>
               </mat-form-field>
             </div>
-            
+
             <div class="form-row">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Telefon</mat-label>
@@ -60,7 +60,7 @@
                 <mat-error *ngIf="rentalForm.get('phone')?.hasError('required')">Telefon jest wymagany</mat-error>
               </mat-form-field>
             </div>
-            
+
             <div class="form-row">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Email</mat-label>
@@ -69,7 +69,7 @@
                 <mat-error *ngIf="rentalForm.get('email')?.hasError('email')">Nieprawidłowy format email</mat-error>
               </mat-form-field>
             </div>
-            
+
             <div class="form-row">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Adres</mat-label>
@@ -79,7 +79,7 @@
             </div>
           </mat-card-content>
         </mat-card>
-        
+
         <!-- Rental Dates Section -->
         <mat-card class="section-card">
           <mat-card-header>
@@ -95,24 +95,16 @@
                 <mat-datepicker #pickupDatePicker></mat-datepicker>
                 <mat-error *ngIf="rentalForm.get('pickupDate')?.hasError('required')">Data odbioru jest wymagana</mat-error>
               </mat-form-field>
-              
-              <div class="time-input-group">
-                <mat-form-field appearance="outline" class="time-field">
-                  <mat-label>Godzina odbioru</mat-label>
-                  <input matInput type="time" formControlName="pickupHour" required>
-                  <mat-error *ngIf="rentalForm.get('pickupHour')?.hasError('required')">Godzina odbioru jest wymagana</mat-error>
-                </mat-form-field>
-                <div class="time-controls">
-                  <button mat-icon-button type="button" (click)="incrementTime('pickupHour')" aria-label="Zwiększ godzinę">
-                    <mat-icon>arrow_upward</mat-icon>
-                  </button>
-                  <button mat-icon-button type="button" (click)="decrementTime('pickupHour')" aria-label="Zmniejsz godzinę">
-                    <mat-icon>arrow_downward</mat-icon>
-                  </button>
-                </div>
-              </div>
+
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Godzina odbioru</mat-label>
+                <input matInput [matTimepicker]="pickupTimePicker" formControlName="pickupHour" required>
+                <mat-timepicker-toggle matSuffix [for]="pickupTimePicker"></mat-timepicker-toggle>
+                <mat-timepicker #pickupTimePicker></mat-timepicker>
+                <mat-error *ngIf="rentalForm.get('pickupHour')?.hasError('required')">Godzina odbioru jest wymagana</mat-error>
+              </mat-form-field>
             </div>
-            
+
             <h3>Zwrot</h3>
             <div class="date-time-row">
               <mat-form-field appearance="outline" class="date-field">
@@ -122,26 +114,18 @@
                 <mat-datepicker #returnDatePicker></mat-datepicker>
                 <mat-error *ngIf="rentalForm.get('returnDate')?.hasError('required')">Data zwrotu jest wymagana</mat-error>
               </mat-form-field>
-              
-              <div class="time-input-group">
-                <mat-form-field appearance="outline" class="time-field">
-                  <mat-label>Godzina zwrotu</mat-label>
-                  <input matInput type="time" formControlName="returnHour" required>
-                  <mat-error *ngIf="rentalForm.get('returnHour')?.hasError('required')">Godzina zwrotu jest wymagana</mat-error>
-                </mat-form-field>
-                <div class="time-controls">
-                  <button mat-icon-button type="button" (click)="incrementTime('returnHour')" aria-label="Zwiększ godzinę">
-                    <mat-icon>arrow_upward</mat-icon>
-                  </button>
-                  <button mat-icon-button type="button" (click)="decrementTime('returnHour')" aria-label="Zmniejsz godzinę">
-                    <mat-icon>arrow_downward</mat-icon>
-                  </button>
-                </div>
-              </div>
+
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Godzina zwrotu</mat-label>
+                <input matInput [matTimepicker]="returnTimePicker" formControlName="returnHour" required>
+                <mat-timepicker-toggle matSuffix [for]="returnTimePicker"></mat-timepicker-toggle>
+                <mat-timepicker #returnTimePicker></mat-timepicker>
+                <mat-error *ngIf="rentalForm.get('returnHour')?.hasError('required')">Godzina zwrotu jest wymagana</mat-error>
+              </mat-form-field>
             </div>
           </mat-card-content>
         </mat-card>
-        
+
         <!-- Equipment Selection Section -->
         <mat-card class="section-card">
           <mat-card-header>
@@ -149,21 +133,23 @@
           </mat-card-header>
           <mat-card-content>
             <p class="equipment-instructions">Proszę podać ilość rezerwowanego sprzętu. W uwagach można podać numer buta w przypadku rezerwacji raków lub raczków.</p>
-            
+
             <div class="equipment-table">
               <div class="equipment-header">
                 <div class="col-name">Sprzęt</div>
                 <div class="col-quantity">Ilość</div>
                 <div class="col-notes">Uwagi</div>
               </div>
-              
+
               @for (item of settings.equipmentItems; track item; let i = $index) {
                 <div class="equipment-row" formArrayName="equipment">
                   <div class="col-name">{{ item }}</div>
                   <div class="col-quantity" [formGroupName]="i">
                     <div class="quantity-input-group">
                       <mat-form-field appearance="outline" class="quantity-field">
-                        <input matInput type="number" formControlName="quantity" min="0">
+                        <mat-label>Ilość</mat-label>
+                        <input matInput type="number" formControlName="quantity" min="0" step="1" inputmode="numeric">
+                        <mat-error *ngIf="equipmentArray.at(i).get('quantity')?.hasError('min')">Ilość nie może być ujemna</mat-error>
                       </mat-form-field>
                       <div class="quantity-controls">
                         <button mat-icon-button type="button" (click)="incrementQuantity(i)" aria-label="Zwiększ ilość">
@@ -185,7 +171,7 @@
             </div>
           </mat-card-content>
         </mat-card>
-        
+
         <!-- Feedback Message Area -->
         @if (feedbackMessage()) {
           <mat-card [class.success-message]="feedbackType() === 'success'" [class.error-message]="feedbackType() === 'error'" class="feedback-card">
@@ -194,7 +180,7 @@
             </mat-card-content>
           </mat-card>
         }
-        
+
         <!-- Submit Button -->
         <div class="form-actions">
           <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting()">
@@ -217,7 +203,7 @@
       </mat-card>
     }
   </main>
-  
+
   <footer>
     <p>&copy; 2025 Formularz wynajmu sprzętu</p>
   </footer>
