@@ -1,0 +1,209 @@
+<div class="container">
+  <header>
+    <h1>Formularz wynajmu sprzętu</h1>
+  </header>
+  
+  <main>
+    @if (!showSuccess()) {
+      <div class="intro-text">
+        <p>Dzień dobry,</p>
+        <p>w celu dokonania rezerwacji sprzętu proszę wypełnić poniższy formularz - są to dane potrzebne do zawarcia umowy wypożyczenia.</p>
+        <p>Dostępny sprzęt i cennik: <a href="https://kaukazwypozyczalnia.pl/cennik" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/cennik</a></p>
+        <p>Grzegorz Pawłowski,<br>Wypożyczalnia Kaukaz</p>
+      </div>
+      
+      <form [formGroup]="rentalForm" (ngSubmit)="onSubmit()" novalidate>
+        <!-- Personal Information Section -->
+        <section class="personal-info">
+          <h2>Dane osobowe</h2>
+          <div class="form-group">
+            <label for="name">Imię *</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              autocomplete="given-name"
+              [class.error]="rentalForm.get('name')?.invalid && rentalForm.get('name')?.touched">
+          </div>
+          <div class="form-group">
+            <label for="surname">Nazwisko *</label>
+            <input
+              type="text"
+              id="surname"
+              formControlName="surname"
+              autocomplete="family-name"
+              [class.error]="rentalForm.get('surname')?.invalid && rentalForm.get('surname')?.touched">
+          </div>
+          <div class="form-group">
+            <label for="peselOrdId">PESEL lub ID *</label>
+            <input
+              type="text"
+              id="peselOrdId"
+              formControlName="peselOrdId"
+              [class.error]="rentalForm.get('peselOrdId')?.invalid && rentalForm.get('peselOrdId')?.touched">
+          </div>
+          <div class="form-group">
+            <label for="phone">Telefon *</label>
+            <input
+              type="tel"
+              id="phone"
+              formControlName="phone"
+              autocomplete="tel"
+              [class.error]="rentalForm.get('phone')?.invalid && rentalForm.get('phone')?.touched">
+          </div>
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              autocomplete="email"
+              [class.error]="rentalForm.get('email')?.invalid && rentalForm.get('email')?.touched">
+          </div>
+          <div class="form-group">
+            <label for="address">Adres *</label>
+            <input
+              type="text"
+              id="address"
+              formControlName="address"
+              autocomplete="street-address"
+              [class.error]="rentalForm.get('address')?.invalid && rentalForm.get('address')?.touched">
+          </div>
+        </section>
+        
+        <!-- Rental Dates Section -->
+        <section class="rental-dates">
+          <h2>Termin wynajmu</h2>
+          <h3>Odbiór</h3>
+          <div class="date-time-row">
+            <div class="form-group">
+              <label for="pickupDate">Data odbioru *</label>
+              <input
+                type="date"
+                id="pickupDate"
+                formControlName="pickupDate"
+                [class.error]="rentalForm.get('pickupDate')?.invalid && rentalForm.get('pickupDate')?.touched">
+            </div>
+            <div class="form-group">
+              <label for="pickupHour">Godzina odbioru *</label>
+              <div class="input-with-spinner">
+                <input
+                  type="time"
+                  id="pickupHour"
+                  formControlName="pickupHour"
+                  [class.error]="rentalForm.get('pickupHour')?.invalid && rentalForm.get('pickupHour')?.touched">
+                <div class="spinner-buttons">
+                  <button type="button" class="spinner-btn spinner-up" (click)="incrementTime('pickupHour')" aria-label="Zwiększ godzinę" tabindex="-1">
+                    <span aria-hidden="true">▲</span>
+                  </button>
+                  <button type="button" class="spinner-btn spinner-down" (click)="decrementTime('pickupHour')" aria-label="Zmniejsz godzinę" tabindex="-1">
+                    <span aria-hidden="true">▼</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h3>Zwrot</h3>
+          <div class="date-time-row">
+            <div class="form-group">
+              <label for="returnDate">Data zwrotu *</label>
+              <input
+                type="date"
+                id="returnDate"
+                formControlName="returnDate"
+                [class.error]="rentalForm.get('returnDate')?.invalid && rentalForm.get('returnDate')?.touched">
+            </div>
+            <div class="form-group">
+              <label for="returnHour">Godzina zwrotu *</label>
+              <div class="input-with-spinner">
+                <input
+                  type="time"
+                  id="returnHour"
+                  formControlName="returnHour"
+                  [class.error]="rentalForm.get('returnHour')?.invalid && rentalForm.get('returnHour')?.touched">
+                <div class="spinner-buttons">
+                  <button type="button" class="spinner-btn spinner-up" (click)="incrementTime('returnHour')" aria-label="Zwiększ godzinę" tabindex="-1">
+                    <span aria-hidden="true">▲</span>
+                  </button>
+                  <button type="button" class="spinner-btn spinner-down" (click)="decrementTime('returnHour')" aria-label="Zmniejsz godzinę" tabindex="-1">
+                    <span aria-hidden="true">▼</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Equipment Selection Section -->
+        <section class="equipment-section">
+          <h2>Wybór sprzętu</h2>
+          <p class="equipment-instructions">Proszę podać ilość rezerwowanego sprzętu. W uwagach można podać numer buta w przypadku rezerwacji raków lub raczków.</p>
+          <div class="equipment-table" role="table" aria-label="Tabela wyboru sprzętu">
+            <!-- Table header -->
+            <div class="equipment-row header" role="row">
+              <div class="col-equipment" role="columnheader">Sprzęt</div>
+              <div class="col-quantity" role="columnheader">Ilość</div>
+              <div class="col-notes" role="columnheader">Uwagi</div>
+            </div>
+            <!-- Equipment rows -->
+            @for (item of settings.equipmentItems; track item; let i = $index) {
+              <div class="equipment-row" role="row" formArrayName="equipment">
+                <div class="col-equipment" role="cell">{{ item }}</div>
+                <div class="col-quantity" role="cell" [formGroupName]="i">
+                  <div class="input-with-spinner">
+                    <input
+                      type="number"
+                      formControlName="quantity"
+                      min="0"
+                      step="1"
+                      [attr.aria-label]="'Ilość - ' + item">
+                    <div class="spinner-buttons">
+                      <button type="button" class="spinner-btn spinner-up" (click)="incrementQuantity(i)" aria-label="Zwiększ ilość" tabindex="-1">
+                        <span aria-hidden="true">▲</span>
+                      </button>
+                      <button type="button" class="spinner-btn spinner-down" (click)="decrementQuantity(i)" aria-label="Zmniejsz ilość" tabindex="-1">
+                        <span aria-hidden="true">▼</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-notes" role="cell" [formGroupName]="i">
+                  <input
+                    type="text"
+                    formControlName="notes"
+                    [attr.aria-label]="'Uwagi - ' + item">
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+        
+        <!-- Feedback Message Area -->
+        @if (feedbackMessage()) {
+          <div class="feedback" [class.success]="feedbackType() === 'success'" [class.error]="feedbackType() === 'error'" role="alert" aria-live="polite">
+            {{ feedbackMessage() }}
+          </div>
+        }
+        
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button type="submit" id="submitBtn" [disabled]="isSubmitting()">
+            {{ isSubmitting() ? 'Wysyłanie...' : 'Wyślij' }}
+          </button>
+        </div>
+      </form>
+    } @else {
+      <!-- Success Page -->
+      <div class="success-page">
+        <div class="success-content">
+          <h2>Formularz wysłany pomyślnie</h2>
+          <p>Formularz wysłany pomyślnie. Prosimy czekać na wiadomość z potwierdzeniem rezerwacji.</p>
+        </div>
+      </div>
+    }
+  </main>
+  
+  <footer>
+    <p>&copy; 2025 Formularz wynajmu sprzętu</p>
+  </footer>
+</div>

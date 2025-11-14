@@ -1,30 +1,25 @@
 # Equipment Rental Form
 
-A modern, responsive web application for managing equipment rental requests. This application provides an intuitive interface for users to submit rental requests with automatic date validation, cost calculation, and formatted output.
+A modern, responsive Angular web application for managing equipment rental requests. This application provides an intuitive interface for users to submit rental requests with automatic date validation and formatted output.
 
 ## Features
 
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
-- **Client Information**: Capture essential customer details (name, email, phone)
-- **Equipment Selection**: Choose from various equipment types with automatic cost calculation
-- **Date Validation**: Prevents invalid rental periods (rental date cannot be before pickup date)
-- **Automatic Calculations**: 
-  - Daily rental cost based on equipment type
-  - Total rental days calculation
-  - Overall rental cost computation
+- **Client Information**: Capture essential customer details (name, surname, PESEL/ID, email, phone, address)
+- **Equipment Selection**: Choose from 16 different equipment types with quantity selection and notes
+- **Date Validation**: Prevents invalid rental periods (return date must be after pickup date, no past dates)
+- **Time Spinners**: Easy time selection with +/- buttons in 15-minute increments
 - **Form Validation**: Comprehensive client-side validation with helpful error messages
 - **Modern UI**: Clean interface with smooth animations and user-friendly design
-- **Export Functionality**: Generate formatted rental summary
-
-## Demo
-
-Visit the live application: [https://&lt;your-username&gt;.github.io/&lt;repository-name&gt;/](https://github.com/&lt;your-username&gt;/&lt;repository-name&gt;)
+- **Success Page**: Confirmation page after successful submission
 
 ## Technologies Used
 
-- **HTML5**: Semantic markup structure
+- **Angular 20.3**: Latest version of Angular framework with standalone components
+- **TypeScript**: Strongly typed programming language
+- **Reactive Forms**: Angular's reactive forms for form handling and validation
+- **HttpClient**: For API communication
 - **CSS3**: Modern styling with CSS Grid, Flexbox, and animations
-- **Vanilla JavaScript**: Pure JavaScript for form handling and validation
 - **GitHub Pages**: Automated deployment via GitHub Actions
 
 ## Project Structure
@@ -34,44 +29,63 @@ EquipmentRental.Form/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml          # GitHub Actions workflow for deployment
-├── css/
-│   └── style.css              # Application styles
-├── js/
-│   └── app.js                 # Application logic
-├── index.html                 # Main HTML file
-├── ARCHITECTURE.md            # Technical architecture documentation
-└── README.md                  # This file
+├── src/
+│   ├── app/
+│   │   ├── components/
+│   │   │   └── equipment-rental-form/  # Main form component
+│   │   ├── models/
+│   │   │   └── equipment-rental.model.ts  # TypeScript interfaces
+│   │   ├── services/
+│   │   │   ├── settings.service.ts        # Configuration service
+│   │   │   └── form-submission.service.ts # Form submission service
+│   │   ├── app.ts              # Root component
+│   │   ├── app.config.ts       # Application configuration
+│   │   └── app.routes.ts       # Route configuration
+│   ├── index.html              # Main HTML file
+│   ├── main.ts                 # Application bootstrap
+│   └── styles.css              # Global styles
+├── angular.json                # Angular CLI configuration
+├── package.json                # Dependencies and scripts
+├── tsconfig.json               # TypeScript configuration
+├── ARCHITECTURE.md             # Technical architecture documentation
+└── README.md                   # This file
 ```
 
 ## Getting Started
+
+### Prerequisites
+
+- Node.js 20.x or later
+- npm 10.x or later
 
 ### Local Development
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/<your-username>/<repository-name>.git
-   cd <repository-name>
+   git clone https://github.com/GrzesiekP/EquipmentRental.Form.git
+   cd EquipmentRental.Form
    ```
 
-2. **Open the application**
-   - Simply open [`index.html`](index.html:1) in your web browser
-   - No build process or dependencies required!
-   - For development, you can use a local server:
-     ```bash
-     # Using Python 3
-     python -m http.server 8000
-     
-     # Using Python 2
-     python -m SimpleHTTPServer 8000
-     
-     # Using Node.js (http-server)
-     npx http-server
-     ```
-   - Then navigate to `http://localhost:8000`
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Run development server**
+   ```bash
+   npm start
+   ```
+   Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+   The build artifacts will be stored in the `dist/equipment-rental-angular/browser/` directory.
 
 ### Deployment to GitHub Pages
 
-The application is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
+The application is automatically deployed to GitHub Pages when changes are pushed to the `main` or `master` branch.
 
 #### Initial Setup
 
@@ -85,73 +99,76 @@ The application is automatically deployed to GitHub Pages when changes are pushe
 
 3. **Push your code**:
    ```bash
-   git init
    git add .
    git commit -m "Initial commit"
    git branch -M main
-   git remote add origin https://github.com/<your-username>/<repository-name>.git
    git push -u origin main
    ```
 
 4. **Automatic deployment**:
-   - The GitHub Actions workflow ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml:1)) will automatically trigger
+   - The GitHub Actions workflow (`.github/workflows/deploy.yml`) will automatically trigger
    - Check the "Actions" tab in your repository to monitor deployment progress
-   - Once complete, your site will be live at: `https://<your-username>.github.io/<repository-name>/`
+   - Once complete, your site will be live at: `https://GrzesiekP.github.io/EquipmentRental.Form/`
 
 #### Workflow Details
 
 The deployment workflow:
-- Triggers on every push to the `main` branch
-- Builds and uploads the static site as an artifact
+- Triggers on every push to the `main` or `master` branch
+- Installs Node.js and project dependencies
+- Builds the Angular application for production
+- Uploads the build artifacts
 - Deploys to GitHub Pages
 - Uses official GitHub Actions for reliability
-- Prevents concurrent deployments to avoid conflicts
 
 ## How to Use the Form
 
 1. **Client Information**:
-   - Enter your full name
-   - Provide a valid email address
+   - Enter your name and surname
+   - Provide PESEL or ID number
    - Enter your phone number
+   - Provide a valid email address
+   - Enter your address
 
-2. **Equipment Selection**:
-   - Choose the type of equipment you need
-   - Equipment costs per day:
-     - Excavator: $500/day
-     - Bulldozer: $600/day
-     - Crane: $800/day
-     - Forklift: $150/day
-     - Concrete Mixer: $100/day
+2. **Rental Period**:
+   - **Pickup Date & Time**: Select when you want to pick up the equipment
+   - **Return Date & Time**: Select when you plan to return it
+   - Use the +/- buttons to adjust time in 15-minute increments
+   - The form automatically validates that dates are valid
 
-3. **Rental Period**:
-   - **Pickup Date**: Select when you want to pick up the equipment
-   - **Return Date**: Select when you plan to return it
-   - The form automatically validates that the return date is after the pickup date
+3. **Equipment Selection**:
+   - Choose from 16 available equipment types:
+     - Raki Koszykowe
+     - Czekan
+     - Raki Półautomatyczne
+     - Kijki Trekkingowe
+     - ABC Lawinowe
+     - Łopata Lawinowa
+     - Detektor Lawinowy
+     - Sonda Lawinowa
+     - Zestaw Via Ferrata
+     - Kask
+     - Lonża Via Ferrata
+     - Uprząż
+     - Stuptuty
+     - Nosidełko Turystyczne dla Dzieci
+     - Raczki Turystyczne
+     - Plecak
+   - Use the +/- buttons to adjust quantity
+   - Add notes for specific requirements (e.g., boot size for crampons)
 
 4. **Submit**:
    - Review your information
-   - Click "Submit Rental Request"
-   - View the formatted summary with total cost
-
-5. **Reset** (optional):
-   - Click "Reset Form" to clear all fields and start over
+   - Click "Wyślij" (Submit)
+   - View the success confirmation page
 
 ## Form Validation
 
 The application includes comprehensive validation:
 - All fields are required
 - Email must be in valid format
-- Phone number must contain at least 10 digits
+- Pickup date cannot be in the past
 - Return date must be after pickup date
 - Helpful error messages guide you to correct any issues
-
-## Cost Calculation
-
-The application automatically calculates:
-- **Number of rental days**: (Return Date - Pickup Date)
-- **Total cost**: Daily Rate × Number of Days
-
-Example: Renting a Crane for 5 days = $800/day × 5 days = $4,000
 
 ## Browser Support
 
@@ -181,4 +198,4 @@ For questions or feedback, please open an issue in the GitHub repository.
 
 ---
 
-**Built with ❤️ using vanilla HTML, CSS, and JavaScript**
+**Built with ❤️ using Angular 20**
