@@ -1,0 +1,22 @@
+{
+  "name": "equipment-rental-form",
+  "version": "1.0.0",
+  "description": "A modern, responsive web application for managing equipment rental requests built with Vue.js 3 and TypeScript",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf js/*.js js/*.js.map"
+  },
+  "keywords": [
+    "vue",
+    "typescript",
+    "equipment-rental",
+    "form"
+  ],
+  "author": "Grzegorz Pawłowski",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.5"
+  }
+}

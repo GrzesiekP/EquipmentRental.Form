@@ -1,13 +1,13 @@
-# Equipment Rental Form - Technical Architecture Specification (Vue.js)
+# Equipment Rental Form - Technical Architecture Specification (Vue.js + TypeScript)
 
 ## Project Overview
-A responsive web form for equipment rental built with Vue.js 3, collecting user information and equipment selections, then submitting the data to a webhook endpoint. The form is deployed via GitHub Pages.
+A responsive web form for equipment rental built with Vue.js 3 and TypeScript, collecting user information and equipment selections, then submitting the data to a webhook endpoint. The form is deployed via GitHub Pages.
 
 ## Requirements Summary
-- **Technology Stack**: HTML5, CSS3, Vue.js 3 (CDN)
+- **Technology Stack**: TypeScript, HTML5, CSS3, Vue.js 3 (CDN)
 - **Target Browsers**: Modern browsers (Chrome, Firefox, Safari, Edge - latest 2 versions)
 - **Responsiveness**: Mobile-friendly design
-- **Validation**: Client-side validation with Vue.js
+- **Validation**: Client-side validation with Vue.js and TypeScript type checking
 - **Deployment**: GitHub Pages via GitHub Actions
 
 ---
@@ -17,11 +17,16 @@ A responsive web form for equipment rental built with Vue.js 3, collecting user 
 ```
 equipment-rental-form/
 ├── index.html              # Main HTML file with Vue.js template syntax
+├── package.json            # NPM dependencies and build scripts
+├── tsconfig.json           # TypeScript compiler configuration
 ├── css/
 │   └── style.css          # All styling rules
-├── js/
-│   ├── settings.js        # Configuration (equipment items, webhook URL)
-│   └── vue-app.js         # Vue.js 3 application logic
+├── ts/                     # TypeScript source files
+│   ├── settings.ts        # Configuration with type definitions
+│   └── vue-app.ts         # Vue.js 3 application with TypeScript
+├── js/                     # Compiled JavaScript files (build output)
+│   ├── settings.js        # Compiled from ts/settings.ts
+│   └── vue-app.js         # Compiled from ts/vue-app.ts
 ├── assets/
 │   └── logo.png           # Application logo
 ├── .github/
@@ -39,6 +44,18 @@ equipment-rental-form/
 - Meta tags for responsive design
 - Links to Vue.js CDN, CSS and JavaScript files
 
+**package.json**
+- NPM dependencies (TypeScript)
+- Build scripts for compiling TypeScript
+- Project metadata
+
+**tsconfig.json**
+- TypeScript compiler configuration
+- Target: ES2020
+- Module: ES2020
+- Strict type checking enabled
+- Source maps for debugging
+
 **css/style.css**
 - Form layout and styling
 - Responsive design rules
@@ -47,19 +64,31 @@ equipment-rental-form/
 - Feedback message styling
 - Unchanged from original design
 
-**js/settings.js**
-- Configuration object (SETTINGS)
+**ts/settings.ts**
+- TypeScript configuration source
+- Type definitions for settings structure
 - Webhook URL
 - Equipment items list
 
-**js/vue-app.js**
-- Vue.js 3 application instance
-- Reactive data management
-- Form submission handler
+**ts/vue-app.ts**
+- TypeScript Vue.js 3 application source
+- Type definitions for all data structures
+- Reactive data management with types
+- Form submission handler with type safety
 - Data collection and JSON formatting
-- Webhook POST request
+- Webhook POST request with typed responses
 - User feedback (success/error messages)
-- Form validation logic
+- Form validation logic with typed returns
+
+**js/settings.js** (build output)
+- Compiled JavaScript from ts/settings.ts
+- Configuration object (SETTINGS)
+- Committed to repository for GitHub Pages deployment
+
+**js/vue-app.js** (build output)
+- Compiled JavaScript from ts/vue-app.ts
+- Vue.js 3 application instance
+- Committed to repository for GitHub Pages deployment
 
 **.github/workflows/deploy.yml**
 - GitHub Actions configuration
@@ -280,9 +309,105 @@ button {
 
 ---
 
-## 5. Vue.js Application Structure
+## 5. TypeScript Type System
 
-### Vue.js Organization (vue-app.js)
+### Type Definitions
+
+The application uses comprehensive TypeScript type definitions for all data structures:
+
+```typescript
+// Equipment item in form data
+interface EquipmentItem {
+    name: string;
+    quantity: number;
+    notes: string;
+}
+
+// Form data structure
+interface FormData {
+    name: string;
+    surname: string;
+    peselOrdId: string;
+    phone: string;
+    email: string;
+    address: string;
+    pickupDate: string;
+    pickupHour: string;
+    returnDate: string;
+    returnHour: string;
+    equipment: { [key: string]: EquipmentItem };
+}
+
+// Feedback message structure
+interface Feedback {
+    message: string;
+    type: string;
+}
+
+// Form validation result
+interface ValidationResult {
+    isValid: boolean;
+    message: string;
+}
+
+// Equipment submission data
+interface EquipmentSubmission {
+    type: string;
+    quantity: number;
+    comments: string | null;
+}
+
+// Complete submission data
+interface SubmissionData {
+    submitDate: string;
+    name: string;
+    surname: string;
+    peselOrdId: string;
+    phone: string;
+    email: string;
+    address: string;
+    pickupDate: string;
+    returnDate: string;
+    pickupHour: string;
+    returnHour: string;
+    equipment: EquipmentSubmission[];
+}
+
+// Webhook response
+interface WebhookResponse {
+    success: boolean;
+    status?: number;
+    data?: any;
+    error?: string;
+}
+```
+
+### TypeScript Benefits
+
+1. **Type Safety**: Catch errors at compile time before runtime
+2. **Better IDE Support**: Autocomplete, inline documentation, and refactoring tools
+3. **Code Documentation**: Types serve as inline documentation
+4. **Maintainability**: Easier to understand and modify code
+5. **Refactoring**: Safe and confident code changes with type checking
+
+### Build Process
+
+**Development Workflow**:
+1. Edit TypeScript files in `ts/` directory
+2. Run `npm run build` to compile to JavaScript
+3. Test in browser
+4. Commit both source (`ts/`) and compiled (`js/`) files
+
+**Build Commands**:
+- `npm run build` - Compile TypeScript once
+- `npm run watch` - Watch mode for automatic recompilation
+- `npm run clean` - Remove compiled JavaScript files
+
+---
+
+## 6. Vue.js Application Structure
+
+### Vue.js Organization (vue-app.ts → vue-app.js)
 
 ```javascript
 // Check if Vue is loaded

@@ -1,11 +1,19 @@
-"use strict";
 // ====================================
 // Equipment Rental Form - Settings
 // ====================================
+
+/**
+ * Interface for application settings
+ */
+interface Settings {
+    webhookUrl: string;
+    equipmentItems: string[];
+}
+
 /**
  * Application configuration
  */
-const SETTINGS = {
+const SETTINGS: Settings = {
     webhookUrl: 'https://tantunergon8n.duckdns.org/webhook/submit-reservation',
     equipmentItems: [
         'Raki Koszykowe',
@@ -26,4 +34,3 @@ const SETTINGS = {
         'Plecak'
     ]
 };
-//# sourceMappingURL=settings.js.map

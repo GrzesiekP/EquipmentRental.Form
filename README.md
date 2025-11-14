@@ -19,6 +19,7 @@ Visit the live application: [https://grzesiekp.github.io/EquipmentRental.Form/](
 
 ## Technologies Used
 
+- **TypeScript**: Strongly typed programming language that builds on JavaScript
 - **Vue.js 3**: Progressive JavaScript framework for building user interfaces
 - **HTML5**: Semantic markup structure
 - **CSS3**: Modern styling with CSS Grid, Flexbox, and animations
@@ -33,17 +34,28 @@ EquipmentRental.Form/
 │       └── deploy.yml          # GitHub Actions workflow for deployment
 ├── css/
 │   └── style.css              # Application styles
+├── ts/
+│   ├── settings.ts            # TypeScript configuration source
+│   └── vue-app.ts             # TypeScript Vue.js application source
 ├── js/
-│   ├── settings.js            # Configuration (equipment items, webhook URL)
-│   └── vue-app.js             # Vue.js application logic
+│   ├── settings.js            # Compiled JavaScript configuration
+│   └── vue-app.js             # Compiled JavaScript Vue.js application
 ├── assets/
 │   └── logo.png               # Application logo
 ├── index.html                 # Main HTML file with Vue.js template
+├── package.json               # NPM dependencies and build scripts
+├── tsconfig.json              # TypeScript compiler configuration
 ├── ARCHITECTURE.md            # Technical architecture documentation
 └── README.md                  # This file
 ```
 
 ## Getting Started
+
+### Prerequisites
+
+- **Node.js** and **npm** (for building TypeScript)
+- A modern web browser
+- Internet connection (for Vue.js CDN)
 
 ### Local Development
 
@@ -53,7 +65,22 @@ EquipmentRental.Form/
    cd EquipmentRental.Form
    ```
 
-2. **Open the application**
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Build TypeScript files**
+   ```bash
+   npm run build
+   ```
+   
+   Or for automatic recompilation during development:
+   ```bash
+   npm run watch
+   ```
+
+4. **Open the application**
    - Simply open [`index.html`](index.html:1) in your web browser
    - Note: Vue.js is loaded from CDN, so an internet connection is required
    - For development, you can use a local server:
@@ -69,10 +96,26 @@ EquipmentRental.Form/
      ```
    - Then navigate to `http://localhost:8000`
 
-3. **Configuration**
-   - Edit `js/settings.js` to configure:
+5. **Configuration**
+   - Edit `ts/settings.ts` to configure:
      - Webhook URL for form submission
      - Equipment items list
+   - After editing, rebuild with `npm run build`
+
+### TypeScript Development
+
+The project uses TypeScript for type safety and better developer experience:
+
+- **Source files**: Located in the `ts/` directory
+- **Build command**: `npm run build` - Compiles TypeScript to JavaScript
+- **Watch mode**: `npm run watch` - Automatically recompiles on file changes
+- **Output**: Compiled JavaScript files are placed in the `js/` directory
+
+To modify the application:
+1. Edit TypeScript files in `ts/` directory
+2. Run `npm run build` to compile
+3. Test changes in your browser
+4. Commit both `ts/` (source) and `js/` (compiled) files
 
 ### Deployment to GitHub Pages
 
