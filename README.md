@@ -117,9 +117,13 @@ To modify the application:
 3. Test changes in your browser
 4. Commit both `ts/` (source) and `js/` (compiled) files
 
+**Important**: Always run `npm run build` before committing changes to ensure the compiled JavaScript is up to date. The CI workflow will verify this.
+
 ### Deployment to GitHub Pages
 
-The application is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
+The application is automatically deployed to GitHub Pages when changes are pushed to the `master` or `main` branch.
+
+**Note**: The compiled JavaScript files in the `js/` directory are committed to the repository because GitHub Pages serves static files directly. No build step is performed during deployment.
 
 #### Initial Setup
 
