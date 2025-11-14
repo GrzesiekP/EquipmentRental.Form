@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "clean": "rm -rf js/*.js js/*.js.map"
+    "clean": "rm -rf js/*.js js/*.js.map",
+    "start": "npm run build && python -m http.server 8000"
   },
   "keywords": [
     "vue",
