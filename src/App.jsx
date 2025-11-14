@@ -193,23 +193,53 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: '#f9fafb' }}>
-        <Container maxWidth="md" sx={{ flex: 1, py: 4 }}>
-          <Paper elevation={0} sx={{ p: 4, mb: 4, bgcolor: 'white' }}>
-            <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 3 }}>
+        <Container 
+          maxWidth="md" 
+          sx={{ 
+            flex: 1, 
+            py: { xs: 2, sm: 4 },
+            px: { xs: 2, sm: 3 }
+          }}
+        >
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: { xs: 2, sm: 3, md: 4 }, 
+              mb: { xs: 2, sm: 4 }, 
+              bgcolor: 'white' 
+            }}
+          >
+            <Typography 
+              variant="h4" 
+              component="h1" 
+              gutterBottom 
+              align="center" 
+              sx={{ 
+                mb: 3,
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
+              }}
+            >
               Formularz wynajmu sprzętu
             </Typography>
             
-            <Box sx={{ mb: 4, p: 2, bgcolor: '#f0f9ff', borderRadius: 1 }}>
-              <Typography variant="body1" paragraph>
+            <Box 
+              sx={{ 
+                mb: 4, 
+                p: { xs: 1.5, sm: 2 }, 
+                bgcolor: '#f0f9ff', 
+                borderRadius: 1 
+              }}
+            >
+              <Typography variant="body1" paragraph sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                 Dzień dobry,
               </Typography>
-              <Typography variant="body1" paragraph>
+              <Typography variant="body1" paragraph sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                 w celu dokonania rezerwacji sprzętu proszę wypełnić poniższy formularz - są to dane potrzebne do zawarcia umowy wypożyczenia.
               </Typography>
-              <Typography variant="body1" paragraph>
+              <Typography variant="body1" paragraph sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                 Dostępny sprzęt i cennik: <Link href="https://kaukazwypozyczalnia.pl/cennik" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/cennik</Link>
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                 Grzegorz Pawłowski,<br />
                 Wypożyczalnia Kaukaz
               </Typography>
@@ -249,7 +279,10 @@ function App() {
                   variant="contained" 
                   size="large"
                   disabled={isSubmitting}
-                  sx={{ minWidth: 200 }}
+                  fullWidth
+                  sx={{ 
+                    maxWidth: { xs: '100%', sm: 300 }
+                  }}
                 >
                   {isSubmitting ? 'Wysyłanie...' : 'Wyślij'}
                 </Button>

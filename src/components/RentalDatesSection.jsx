@@ -1,4 +1,4 @@
-import { TextField, Typography, Box, Grid, IconButton, InputAdornment } from '@mui/material';
+import { TextField, Typography, Box, Stack, IconButton, InputAdornment } from '@mui/material';
 import { ArrowDropUp, ArrowDropDown } from '@mui/icons-material';
 import { incrementTime, decrementTime } from '../utils';
 
@@ -22,32 +22,33 @@ function RentalDatesSection({ formData, onChange, disabled }) {
       <Typography variant="h6" component="h3" sx={{ mt: 2, mb: 2 }}>
         Odbiór
       </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Data odbioru"
-            name="pickupDate"
-            type="date"
-            value={formData.pickupDate}
-            onChange={onChange}
-            required
-            fullWidth
-            disabled={disabled}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Godzina odbioru"
-            name="pickupHour"
-            type="time"
-            value={formData.pickupHour}
-            onChange={onChange}
-            required
-            fullWidth
-            disabled={disabled}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{
+      <Stack 
+        direction={{ xs: 'column', sm: 'row' }} 
+        spacing={2}
+        sx={{ mb: 3 }}
+      >
+        <TextField
+          label="Data odbioru"
+          name="pickupDate"
+          type="date"
+          value={formData.pickupDate}
+          onChange={onChange}
+          required
+          fullWidth
+          disabled={disabled}
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          label="Godzina odbioru"
+          name="pickupHour"
+          type="time"
+          value={formData.pickupHour}
+          onChange={onChange}
+          required
+          fullWidth
+          disabled={disabled}
+          InputLabelProps={{ shrink: true }}
+          InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -74,38 +75,37 @@ function RentalDatesSection({ formData, onChange, disabled }) {
               ),
             }}
           />
-        </Grid>
-      </Grid>
+      </Stack>
 
       <Typography variant="h6" component="h3" sx={{ mt: 3, mb: 2 }}>
         Zwrot
       </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Data zwrotu"
-            name="returnDate"
-            type="date"
-            value={formData.returnDate}
-            onChange={onChange}
-            required
-            fullWidth
-            disabled={disabled}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Godzina zwrotu"
-            name="returnHour"
-            type="time"
-            value={formData.returnHour}
-            onChange={onChange}
-            required
-            fullWidth
-            disabled={disabled}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{
+      <Stack 
+        direction={{ xs: 'column', sm: 'row' }} 
+        spacing={2}
+      >
+        <TextField
+          label="Data zwrotu"
+          name="returnDate"
+          type="date"
+          value={formData.returnDate}
+          onChange={onChange}
+          required
+          fullWidth
+          disabled={disabled}
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          label="Godzina zwrotu"
+          name="returnHour"
+          type="time"
+          value={formData.returnHour}
+          onChange={onChange}
+          required
+          fullWidth
+          disabled={disabled}
+          InputLabelProps={{ shrink: true }}
+          InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -132,8 +132,7 @@ function RentalDatesSection({ formData, onChange, disabled }) {
               ),
             }}
           />
-        </Grid>
-      </Grid>
+      </Stack>
     </Box>
   );
 }

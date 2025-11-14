@@ -47,13 +47,22 @@ function EquipmentSection({ equipment, onChange, disabled }) {
         Proszę podać ilość rezerwowanego sprzętu. W uwagach można podać numer buta w przypadku rezerwacji raków lub raczków.
       </Typography>
       
-      <TableContainer component={Paper} variant="outlined">
+      <TableContainer 
+        component={Paper} 
+        variant="outlined"
+        sx={{ 
+          overflowX: 'auto',
+          '& .MuiTable-root': {
+            minWidth: { xs: '600px', sm: 'auto' }
+          }
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>Sprzęt</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', width: '200px' }}>Ilość</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Uwagi</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: { xs: '120px', sm: 'auto' } }}>Sprzęt</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: { xs: '180px', sm: '200px' } }}>Ilość</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: { xs: '120px', sm: 'auto' } }}>Uwagi</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
