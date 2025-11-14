@@ -14,7 +14,16 @@
         </mat-card-content>
       </mat-card>
       
-      <form [formGroup]="rentalForm" (ngSubmit)="onSubmit()" novalidate>
+      <form [formGroup]="rentalForm" (ngSubmit)="onSubmit()" novalidate class="rental-form" [class.form-submitting]="isSubmitting()">
+        <!-- Loading Overlay -->
+        @if (isSubmitting()) {
+          <div class="loading-overlay">
+            <div class="loading-spinner"></div>
+            <p>Wysyłanie formularza...</p>
+          </div>
+        }
+        
+        <fieldset [disabled]="isSubmitting()">
         <!-- Personal Information Section -->
         <mat-card class="section-card">
           <mat-card-header>
@@ -193,6 +202,7 @@
             {{ isSubmitting() ? 'Wysyłanie...' : 'Wyślij' }}
           </button>
         </div>
+        </fieldset>
       </form>
     } @else {
       <!-- Success Page -->
