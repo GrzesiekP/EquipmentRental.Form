@@ -41,7 +41,7 @@ jobs:
 
       # Build Angular application
       - name: Build Angular app
-        run: npm run build -- --base-href=/EquipmentRental.Form/
+        run: npm run build -- --base-href=/
 
       # Configure GitHub Pages
       - name: Setup Pages
