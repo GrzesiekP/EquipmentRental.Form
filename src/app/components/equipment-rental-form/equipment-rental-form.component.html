@@ -1,0 +1,203 @@
+<div class="container">
+  <header>
+    <img src="/logo.png" alt="Logo" class="header-logo">
+    <h1>Formularz wypożyczenia sprzętu</h1>
+  </header>
+
+  <main>
+    @if (!showSuccess()) {
+      <mat-card class="intro-card">
+        <mat-card-content>
+          <p>Dzień dobry,</p>
+          <p>w celu dokonania rezerwacji sprzętu proszę wypełnić poniższy formularz - są to dane potrzebne do zawarcia umowy wypożyczenia.</p>
+          <p>Dostępny sprzęt i cennik: <a href="https://kaukazwypozyczalnia.pl/cennik" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/cennik</a></p>
+          <p>Grzegorz Pawłowski,<br>Wypożyczalnia Kaukaz</p>
+        </mat-card-content>
+      </mat-card>
+
+      <form [formGroup]="rentalForm" (ngSubmit)="onSubmit()" novalidate class="rental-form" [class.form-submitting]="isSubmitting()">
+        <!-- Loading Overlay -->
+        @if (isSubmitting()) {
+          <div class="loading-overlay">
+            <div class="loading-spinner"></div>
+            <p>Wysyłanie formularza...</p>
+          </div>
+        }
+
+        <!-- Personal Information Section -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Dane osobowe</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Imię</mat-label>
+                <input matInput formControlName="name" autocomplete="given-name" required>
+                <mat-error *ngIf="rentalForm.get('name')?.hasError('required')">Imię jest wymagane</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nazwisko</mat-label>
+                <input matInput formControlName="surname" autocomplete="family-name" required>
+                <mat-error *ngIf="rentalForm.get('surname')?.hasError('required')">Nazwisko jest wymagane</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>PESEL lub ID</mat-label>
+                <input matInput formControlName="peselOrdId" required>
+                <mat-error *ngIf="rentalForm.get('peselOrdId')?.hasError('required')">PESEL lub ID jest wymagane</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Telefon</mat-label>
+                <input matInput formControlName="phone" type="tel" autocomplete="tel" required>
+                <mat-error *ngIf="rentalForm.get('phone')?.hasError('required')">Telefon jest wymagany</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" type="email" autocomplete="email" required>
+                <mat-error *ngIf="rentalForm.get('email')?.hasError('required')">Email jest wymagany</mat-error>
+                <mat-error *ngIf="rentalForm.get('email')?.hasError('email')">Nieprawidłowy format email</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Adres</mat-label>
+                <input matInput formControlName="address" autocomplete="street-address" required>
+                <mat-error *ngIf="rentalForm.get('address')?.hasError('required')">Adres jest wymagany</mat-error>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Rental Dates Section -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Termin wynajmu</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <h3>Odbiór</h3>
+            <div class="date-time-row">
+              <mat-form-field appearance="outline" class="date-field">
+                <mat-label>Data odbioru</mat-label>
+                <input matInput [matDatepicker]="pickupDatePicker" formControlName="pickupDate" required>
+                <mat-datepicker-toggle matIconSuffix [for]="pickupDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #pickupDatePicker></mat-datepicker>
+                <mat-error *ngIf="rentalForm.get('pickupDate')?.hasError('required')">Data odbioru jest wymagana</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Godzina odbioru</mat-label>
+                <input matInput [matTimepicker]="pickupTimePicker" formControlName="pickupHour" required>
+                <mat-timepicker-toggle matSuffix [for]="pickupTimePicker"></mat-timepicker-toggle>
+                <mat-timepicker #pickupTimePicker></mat-timepicker>
+                <mat-error *ngIf="rentalForm.get('pickupHour')?.hasError('required')">Godzina odbioru jest wymagana</mat-error>
+              </mat-form-field>
+            </div>
+
+            <h3>Zwrot</h3>
+            <div class="date-time-row">
+              <mat-form-field appearance="outline" class="date-field">
+                <mat-label>Data zwrotu</mat-label>
+                <input matInput [matDatepicker]="returnDatePicker" formControlName="returnDate" required>
+                <mat-datepicker-toggle matIconSuffix [for]="returnDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #returnDatePicker></mat-datepicker>
+                <mat-error *ngIf="rentalForm.get('returnDate')?.hasError('required')">Data zwrotu jest wymagana</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Godzina zwrotu</mat-label>
+                <input matInput [matTimepicker]="returnTimePicker" formControlName="returnHour" required>
+                <mat-timepicker-toggle matSuffix [for]="returnTimePicker"></mat-timepicker-toggle>
+                <mat-timepicker #returnTimePicker></mat-timepicker>
+                <mat-error *ngIf="rentalForm.get('returnHour')?.hasError('required')">Godzina zwrotu jest wymagana</mat-error>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Equipment Selection Section -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Wybór sprzętu</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="equipment-instructions">Proszę podać ilość rezerwowanego sprzętu. W uwagach można podać numer buta w przypadku rezerwacji raków lub raczków.</p>
+
+            <div class="equipment-table">
+              <div class="equipment-header">
+                <div class="col-name">Sprzęt</div>
+                <div class="col-quantity">Ilość</div>
+                <div class="col-notes">Uwagi</div>
+              </div>
+
+              @for (item of settings.equipmentItems; track item; let i = $index) {
+                <div class="equipment-row" formArrayName="equipment">
+                  <div class="col-name">{{ item }}</div>
+                  <div class="col-quantity" [formGroupName]="i">
+                    <div class="quantity-input-group">
+                      <mat-form-field appearance="outline" class="quantity-field">
+                        <mat-label>Ilość</mat-label>
+                        <input matInput type="number" formControlName="quantity" min="0" step="1" inputmode="numeric">
+                        <mat-error *ngIf="equipmentArray.at(i).get('quantity')?.hasError('min')">Ilość nie może być ujemna</mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="col-notes" [formGroupName]="i">
+                    <mat-form-field appearance="outline" class="notes-field">
+                      <input matInput formControlName="notes" placeholder="Uwagi">
+                    </mat-form-field>
+                  </div>
+                </div>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Feedback Message Area -->
+        @if (feedbackMessage()) {
+          <mat-card [class.success-message]="feedbackType() === 'success'" [class.error-message]="feedbackType() === 'error'" class="feedback-card">
+            <mat-card-content>
+              {{ feedbackMessage() }}
+            </mat-card-content>
+          </mat-card>
+        }
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting()">
+            {{ isSubmitting() ? 'Wysyłanie...' : 'Wyślij' }}
+          </button>
+        </div>
+      </form>
+    } @else {
+      <!-- Success Page -->
+      <mat-card class="success-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="success-icon">check_circle</mat-icon>
+            Formularz wysłany pomyślnie
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Formularz wysłany pomyślnie. Prosimy czekać na wiadomość z potwierdzeniem rezerwacji.</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Grzegorz Pawłowski Software Engineering</p>
+  </footer>
+</div>
