@@ -8,7 +8,7 @@ A modern, responsive Angular web application for managing equipment rental reque
 - **Client Information**: Capture essential customer details (name, surname, PESEL/ID, email, phone, address)
 - **Equipment Selection**: Choose from 16 different equipment types with quantity selection and notes
 - **Date Validation**: Prevents invalid rental periods (return date must be after pickup date, no past dates)
-- **Time Spinners**: Easy time selection with +/- buttons in 15-minute increments
+- **Time Spinners**: Easy time selection with +/- buttons in 30-minute increments
 - **Form Validation**: Comprehensive client-side validation with helpful error messages
 - **Modern UI**: Clean interface with smooth animations and user-friendly design
 - **Success Page**: Confirmation page after successful submission
@@ -17,18 +17,19 @@ A modern, responsive Angular web application for managing equipment rental reque
 
 - **Angular 20.3**: Latest version of Angular framework with standalone components
 - **TypeScript**: Strongly typed programming language
+- **Angular Material**: Material Design components for UI (form fields, buttons, date/time pickers, tables, icons, cards)
 - **Reactive Forms**: Angular's reactive forms for form handling and validation
 - **HttpClient**: For API communication
-- **CSS3**: Modern styling with CSS Grid, Flexbox, and animations
-- **GitHub Pages**: Automated deployment via GitHub Actions
+- **SCSS/CSS3**: Modern styling with SCSS for theming and CSS for custom styles
+- **Material Icons**: Icon library for Material Design icons
 
 ## Project Structure
 
 ```
 EquipmentRental.Form/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml          # GitHub Actions workflow for deployment
+├── public/
+│   ├── favicon.ico             # Site favicon
+│   └── logo.png                # Application logo
 ├── src/
 │   ├── app/
 │   │   ├── components/
@@ -39,15 +40,20 @@ EquipmentRental.Form/
 │   │   │   ├── settings.service.ts        # Configuration service
 │   │   │   └── form-submission.service.ts # Form submission service
 │   │   ├── app.ts              # Root component
+│   │   ├── app.html            # Root component template
+│   │   ├── app.css             # Root component styles
+│   │   ├── app.spec.ts         # Root component tests
 │   │   ├── app.config.ts       # Application configuration
 │   │   └── app.routes.ts       # Route configuration
 │   ├── index.html              # Main HTML file
 │   ├── main.ts                 # Application bootstrap
+│   ├── material-theme.scss     # Angular Material theme configuration
 │   └── styles.css              # Global styles
 ├── angular.json                # Angular CLI configuration
 ├── package.json                # Dependencies and scripts
 ├── tsconfig.json               # TypeScript configuration
-├── ARCHITECTURE.md             # Technical architecture documentation
+├── tsconfig.app.json           # TypeScript app configuration
+├── tsconfig.spec.json          # TypeScript test configuration
 └── README.md                   # This file
 ```
 
@@ -112,42 +118,31 @@ This error occurs when using an old global installation of `angular-cli` with No
 
 The project is configured with Angular 20 and all dependencies are included locally. Always use `npm run` commands to ensure you're using the correct versions.
 
-### Deployment to GitHub Pages
+### Deployment
 
-The application is automatically deployed to GitHub Pages when changes are pushed to the `main` or `master` branch.
+To deploy this application, you can use various hosting platforms:
 
-#### Initial Setup
+#### GitHub Pages (Manual)
 
-1. **Create a GitHub repository** for this project
-
-2. **Enable GitHub Pages**:
-   - Go to your repository settings
-   - Navigate to "Pages" section
-   - Under "Build and deployment", select:
-     - Source: **GitHub Actions**
-
-3. **Push your code**:
+1. **Build the application**:
    ```bash
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git push -u origin main
+   npm run build
    ```
 
-4. **Automatic deployment**:
-   - The GitHub Actions workflow (`.github/workflows/deploy.yml`) will automatically trigger
-   - Check the "Actions" tab in your repository to monitor deployment progress
-   - Once complete, your site will be live at: `https://GrzesiekP.github.io/EquipmentRental.Form/`
+2. **Deploy the `dist/equipment-rental-angular/browser/` directory** to your hosting platform
 
-#### Workflow Details
+3. **For GitHub Pages**:
+   - Create a GitHub repository
+   - Enable GitHub Pages in repository settings
+   - Push the built files to the `gh-pages` branch or use GitHub Actions
+   - Your site will be available at: `https://[username].github.io/[repository-name]/`
 
-The deployment workflow:
-- Triggers on every push to the `main` or `master` branch
-- Installs Node.js and project dependencies
-- Builds the Angular application for production
-- Uploads the build artifacts
-- Deploys to GitHub Pages
-- Uses official GitHub Actions for reliability
+#### Other Hosting Options
+
+- **Netlify**: Drag and drop the `dist/equipment-rental-angular/browser/` folder
+- **Vercel**: Connect your repository and configure the build output directory
+- **Azure Static Web Apps**: Deploy via Azure Portal or GitHub Actions
+- **AWS S3 + CloudFront**: Upload to S3 bucket and configure CloudFront distribution
 
 ## How to Use the Form
 
@@ -161,7 +156,7 @@ The deployment workflow:
 2. **Rental Period**:
    - **Pickup Date & Time**: Select when you want to pick up the equipment
    - **Return Date & Time**: Select when you plan to return it
-   - Use the +/- buttons to adjust time in 15-minute increments
+   - Use the +/- buttons to adjust time in 30-minute increments
    - The form automatically validates that dates are valid
 
 3. **Equipment Selection**:
