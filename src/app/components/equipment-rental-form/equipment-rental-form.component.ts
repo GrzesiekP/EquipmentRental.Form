@@ -182,7 +182,7 @@ export class EquipmentRentalFormComponent implements OnInit {
 
       if (quantity > 0 || comments !== '') {
         equipment.push({
-          type: this.settings.equipmentItems[index],
+          type: this.settings.equipmentItems[index].displayName,
           quantity: quantity,
           comments: comments !== '' ? comments : null
         });

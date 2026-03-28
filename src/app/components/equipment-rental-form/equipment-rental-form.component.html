@@ -164,9 +164,9 @@
                 <div class="col-notes">Uwagi</div>
               </div>
 
-              @for (item of settings.equipmentItems; track item; let i = $index) {
+              @for (item of settings.equipmentItems; track item.displayName; let i = $index) {
                 <div class="equipment-row" formArrayName="equipment">
-                  <div class="col-name">{{ item }}</div>
+                  <div class="col-name">{{ item.displayName }}</div>
                   <div class="col-quantity" [formGroupName]="i">
                     <div class="quantity-input-group">
                       <mat-form-field appearance="outline" class="quantity-field">
