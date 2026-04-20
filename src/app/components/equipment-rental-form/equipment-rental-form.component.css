@@ -362,3 +362,36 @@ footer {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Price Section */
+.section-accordion {
+    margin-bottom: 24px;
+    display: block;
+}
+
+.price-panel-description {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.price-breakdown {
+    padding: 8px 0;
+}
+
+.price-total {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.price-breakdown-label {
+    margin: 4px 0;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.price-extra-fee {
+    margin: 4px 0 4px 16px;
+    color: rgba(0, 0, 0, 0.7);
+}

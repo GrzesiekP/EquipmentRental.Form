@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
   webhookUrl: 'https://tantunergon8n.duckdns.org/webhook/submit-reservation',
-  apiUrl: 'API_URL' // TODO: Replace with actual production API URL
+  apiUrl: 'https://equipment-rental-app-c0a3ctd8ghd9bnc6.polandcentral-01.azurewebsites.net',
 };
