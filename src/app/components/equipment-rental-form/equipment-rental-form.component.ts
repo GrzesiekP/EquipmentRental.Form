@@ -1,7 +1,7 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,9 +11,15 @@ import { MAT_TIMEPICKER_CONFIG, MatTimepickerModule } from '@angular/material/ti
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { SettingsService } from '../../services/settings.service';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Observable, catchError, debounceTime, merge, of, switchMap, tap } from 'rxjs';
+import { SettingsService, EquipmentCategory } from '../../services/settings.service';
 import { FormSubmissionService } from '../../services/form-submission.service';
+import { RentalFormStateService } from '../../services/rental-form-state.service';
+import { PriceCalculationService } from '../../services/price-calculation.service';
 import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.model';
+import { CalculatePriceRequest, CalculatePriceResponse } from '../../models/price-calculation.model';
 
 @Component({
   selector: 'app-equipment-rental-form',
@@ -28,7 +34,9 @@ import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.mod
     MatTimepickerModule,
     MatTableModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatExpansionModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './equipment-rental-form.component.html',
   styleUrl: './equipment-rental-form.component.css',
@@ -39,7 +47,7 @@ import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.mod
     },
     {
       provide: MAT_DATE_LOCALE,
-      useValue: 'fr-FR'
+      useValue: 'pl-PL'
     },
     provideNativeDateAdapter()
   ]
@@ -47,6 +55,9 @@ import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.mod
 export class EquipmentRentalFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private formSubmissionService = inject(FormSubmissionService);
+  private formStateService = inject(RentalFormStateService);
+  private priceCalculationService = inject(PriceCalculationService);
+  private destroyRef = inject(DestroyRef);
   settings = inject(SettingsService);
 
   rentalForm!: FormGroup;
@@ -54,10 +65,14 @@ export class EquipmentRentalFormComponent implements OnInit {
   feedbackMessage = signal('');
   feedbackType = signal<'success' | 'error'>('success');
   isSubmitting = signal(false);
+  priceResult = signal<CalculatePriceResponse | null>(null);
+  isPriceLoading = signal(false);
+  isEquipmentLoading = signal(true);
 
   ngOnInit(): void {
     this.initializeForm();
     this.setDefaultDates();
+    this.loadEquipmentItems();
   }
 
   private initializeForm(): void {
@@ -72,15 +87,35 @@ export class EquipmentRentalFormComponent implements OnInit {
       pickupHour: ['16:00', Validators.required],
       returnDate: ['', Validators.required],
       returnHour: ['16:00', Validators.required],
-      equipment: this.fb.array(
-        this.settings.equipmentItems.map(() =>
-          this.fb.group({
-            quantity: [0, [Validators.min(0)]],
-            notes: ['']
-          })
-        )
-      )
+      equipment: this.fb.array([])
     });
+  }
+
+  private loadEquipmentItems(): void {
+    this.settings.loadEquipmentItems()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (items) => {
+          this.replaceEquipmentControls(items.length);
+          this.setupStateSync();
+          this.isEquipmentLoading.set(false);
+        },
+        error: () => {
+          this.isEquipmentLoading.set(false);
+          this.showFeedback('Nie udało się pobrać listy sprzętu. Odśwież stronę i spróbuj ponownie.', 'error');
+        }
+      });
+  }
+
+  private replaceEquipmentControls(itemsCount: number): void {
+    const equipmentControls = Array.from({ length: itemsCount }, () =>
+      this.fb.group({
+        quantity: [0, [Validators.min(0)]],
+        notes: ['']
+      })
+    );
+
+    this.rentalForm.setControl('equipment', this.fb.array(equipmentControls));
   }
 
   get equipmentArray(): FormArray {
@@ -100,6 +135,137 @@ export class EquipmentRentalFormComponent implements OnInit {
       pickupDate: tomorrow,
       returnDate: dayAfterTomorrow
     });
+  }
+
+  private setupStateSync(): void {
+    this.equipmentArray.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.syncEquipmentState());
+
+    merge(
+      this.rentalForm.get('pickupDate')!.valueChanges,
+      this.rentalForm.get('returnDate')!.valueChanges
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.syncDatesState());
+
+    merge(
+      this.rentalForm.get('pickupHour')!.valueChanges,
+      this.rentalForm.get('returnHour')!.valueChanges
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.syncTimesState());
+
+    merge(
+      this.equipmentArray.valueChanges,
+      this.rentalForm.get('pickupDate')!.valueChanges,
+      this.rentalForm.get('returnDate')!.valueChanges,
+      this.rentalForm.get('pickupHour')!.valueChanges,
+      this.rentalForm.get('returnHour')!.valueChanges
+    )
+      .pipe(
+        debounceTime(500),
+        tap(() => this.isPriceLoading.set(true)),
+        switchMap(() => this.fetchPrice()),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(result => {
+        this.isPriceLoading.set(false);
+        this.priceResult.set(result);
+        this.formStateService.updatePrice(result);
+      });
+  }
+
+  private syncEquipmentState(): void {
+    const quantities = this.equipmentArray.controls.map((control, index) => ({
+      displayName: this.settings.equipmentItems[index].displayName,
+      category: this.settings.equipmentItems[index].category,
+      quantity: control.get('quantity')?.value ?? 0,
+    }));
+    this.formStateService.updateEquipmentQuantities(quantities);
+  }
+
+  private syncDatesState(): void {
+    const { pickupDate, returnDate } = this.rentalForm.value;
+    this.formStateService.updateDates(
+      pickupDate instanceof Date ? pickupDate : pickupDate ? new Date(pickupDate) : null,
+      returnDate instanceof Date ? returnDate : returnDate ? new Date(returnDate) : null
+    );
+  }
+
+  private syncTimesState(): void {
+    const { pickupHour, returnHour } = this.rentalForm.value;
+    this.formStateService.updateTimes(pickupHour ?? null, returnHour ?? null);
+  }
+
+  private fetchPrice(): Observable<CalculatePriceResponse | null> {
+    const request = this.buildPriceRequest();
+    if (!request) {
+      return of(null);
+    }
+    return this.priceCalculationService.calculatePrice(request).pipe(
+      catchError(() => of(null))
+    );
+  }
+
+  private buildPriceRequest(): CalculatePriceRequest | null {
+    const { pickupDate, returnDate, pickupHour, returnHour } = this.rentalForm.value;
+    const startDate = this.combineDateAndTime(pickupDate, pickupHour);
+    const endDate = this.combineDateAndTime(returnDate, returnHour);
+
+    if (!startDate || !endDate) {
+      return null;
+    }
+
+    const items = this.equipmentArray.controls
+      .map((control, index) => ({
+        categoryId: this.settings.equipmentItems[index].id,
+        amount: (control.get('quantity')?.value ?? 0) as number,
+      }))
+      .filter(item => item.amount > 0 && item.categoryId !== null)
+      .map(item => ({
+        categoryId: item.categoryId,
+        amount: item.amount,
+      }));
+
+    if (items.length === 0) {
+      return null;
+    }
+
+    return { items, startDate, endDate };
+  }
+
+  private combineDateAndTime(date: Date | string | null, time: Date | string | null): string | null {
+    if (!date || !time) {
+      return null;
+    }
+
+    const dateObj = date instanceof Date ? new Date(date) : new Date(date);
+    if (isNaN(dateObj.getTime())) {
+      return null;
+    }
+
+    if (time instanceof Date) {
+      dateObj.setHours(time.getHours(), time.getMinutes(), 0, 0);
+    } else {
+      const match = time.match(/(\d{1,2}):(\d{2})/);
+      if (!match) {
+        return null;
+      }
+      dateObj.setHours(parseInt(match[1], 10), parseInt(match[2], 10), 0, 0);
+    }
+
+    return this.formatDateTimeLocal(dateObj);
+  }
+
+  private formatDateTimeLocal(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   }
 
   private formatDateInput(date: Date): string {
@@ -182,7 +348,7 @@ export class EquipmentRentalFormComponent implements OnInit {
 
       if (quantity > 0 || comments !== '') {
         equipment.push({
-          type: this.settings.equipmentItems[index],
+          type: this.settings.equipmentItems[index].displayName,
           quantity: quantity,
           comments: comments !== '' ? comments : null
         });

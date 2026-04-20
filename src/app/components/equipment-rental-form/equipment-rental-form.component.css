@@ -3,6 +3,7 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 20px;
+    padding-bottom: 96px;
 }
 
 header {
@@ -258,6 +259,7 @@ footer {
 @media (max-width: 768px) {
     .container {
         padding: 12px;
+        padding-bottom: 110px;
     }
 
     header {
@@ -307,6 +309,20 @@ footer {
     .quantity-controls {
         flex-direction: row;
         gap: 8px;
+    }
+
+    .floating-total-bar {
+        bottom: 8px;
+        width: calc(100% - 16px);
+        border-radius: 10px;
+    }
+
+    .floating-total-content {
+        padding: 10px 12px;
+    }
+
+    .floating-total-value {
+        font-size: 1rem;
     }
 }
 
@@ -361,4 +377,76 @@ footer {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Price Section */
+.section-accordion {
+    margin-bottom: 24px;
+    display: block;
+}
+
+.price-panel-description {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.price-breakdown {
+    padding: 8px 0;
+}
+
+.price-total {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.price-breakdown-label {
+    margin: 4px 0;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.price-extra-fee {
+    margin: 4px 0 4px 16px;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.floating-total-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    width: min(900px, calc(100% - 24px));
+    z-index: 1000;
+    background: #1976d2;
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.floating-total-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+}
+
+.floating-total-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.floating-total-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.floating-total-spinner {
+    margin-right: 6px;
+}
+
+::ng-deep .floating-total-spinner circle {
+    stroke: #ffffff;
 }

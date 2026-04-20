@@ -1,0 +1,20 @@
+{
+  "/api": {
+    "target": "https://localhost:7091",
+    "secure": false,
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/n8n": {
+    "target": "https://tantunergon8n.duckdns.org",
+    "secure": true,
+    "pathRewrite": {
+      "^/n8n": ""
+    },
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
