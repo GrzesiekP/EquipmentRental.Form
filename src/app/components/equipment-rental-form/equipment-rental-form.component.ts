@@ -47,7 +47,7 @@ import { CalculatePriceRequest, CalculatePriceResponse } from '../../models/pric
     },
     {
       provide: MAT_DATE_LOCALE,
-      useValue: 'fr-FR'
+      useValue: 'pl-PL'
     },
     provideNativeDateAdapter()
   ]
