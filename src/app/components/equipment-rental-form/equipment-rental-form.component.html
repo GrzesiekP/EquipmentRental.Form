@@ -252,6 +252,19 @@
           </button>
         </div>
       </form>
+
+      @if (isPriceLoading() || priceResult()) {
+        <div class="floating-total-bar" aria-live="polite">
+          <div class="floating-total-content">
+            <span class="floating-total-label">Koszt całkowity</span>
+            @if (isPriceLoading()) {
+              <mat-spinner class="floating-total-spinner" diameter="20"></mat-spinner>
+            } @else {
+              <span class="floating-total-value">{{ priceResult()!.totalAmount }} zł</span>
+            }
+          </div>
+        </div>
+      }
     } @else {
       <!-- Success Page -->
       <mat-card class="success-card">
