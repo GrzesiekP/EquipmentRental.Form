@@ -1,5 +1,5 @@
 export interface PriceCalculationItem {
-  category: string;
+  categoryId: string;
   amount: number;
 }
 

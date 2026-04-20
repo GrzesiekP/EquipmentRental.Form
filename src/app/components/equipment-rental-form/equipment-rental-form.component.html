@@ -158,32 +158,40 @@
             <p class="equipment-instructions">Proszę podać ilość rezerwowanego sprzętu. W uwagach można podać numer buta w przypadku rezerwacji raków lub raczków.</p>
 
             <div class="equipment-table">
-              <div class="equipment-header">
-                <div class="col-name">Sprzęt</div>
-                <div class="col-quantity">Ilość</div>
-                <div class="col-notes">Uwagi</div>
-              </div>
+              @if (isEquipmentLoading()) {
+                <div class="equipment-row">
+                  <div class="col-name">Ładowanie sprzętu...</div>
+                  <div class="col-quantity"></div>
+                  <div class="col-notes"></div>
+                </div>
+              } @else {
+                <div class="equipment-header">
+                  <div class="col-name">Sprzęt</div>
+                  <div class="col-quantity">Ilość</div>
+                  <div class="col-notes">Uwagi</div>
+                </div>
 
-              @for (item of settings.equipmentItems; track item.displayName; let i = $index) {
-                <div class="equipment-row" formArrayName="equipment">
-                  <div class="col-name">{{ item.displayName }}</div>
-                  <div class="col-quantity" [formGroupName]="i">
-                    <div class="quantity-input-group">
-                      <mat-form-field appearance="outline" class="quantity-field">
-                        <mat-label>Ilość</mat-label>
-                        <input matInput type="number" formControlName="quantity" min="0" step="1" inputmode="numeric">
-                        @if (equipmentArray.at(i).get('quantity')?.hasError('min')) {
-                          <mat-error>Ilość nie może być ujemna</mat-error>
-                        }
+                @for (item of settings.equipmentItems; track item.id; let i = $index) {
+                  <div class="equipment-row" formArrayName="equipment">
+                    <div class="col-name">{{ item.displayName }}</div>
+                    <div class="col-quantity" [formGroupName]="i">
+                      <div class="quantity-input-group">
+                        <mat-form-field appearance="outline" class="quantity-field">
+                          <mat-label>Ilość</mat-label>
+                          <input matInput type="number" formControlName="quantity" min="0" step="1" inputmode="numeric">
+                          @if (equipmentArray.at(i).get('quantity')?.hasError('min')) {
+                            <mat-error>Ilość nie może być ujemna</mat-error>
+                          }
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="col-notes" [formGroupName]="i">
+                      <mat-form-field appearance="outline" class="notes-field">
+                        <input matInput formControlName="notes" placeholder="Uwagi">
                       </mat-form-field>
                     </div>
                   </div>
-                  <div class="col-notes" [formGroupName]="i">
-                    <mat-form-field appearance="outline" class="notes-field">
-                      <input matInput formControlName="notes" placeholder="Uwagi">
-                    </mat-form-field>
-                  </div>
-                </div>
+                }
               }
             </div>
           </mat-card-content>

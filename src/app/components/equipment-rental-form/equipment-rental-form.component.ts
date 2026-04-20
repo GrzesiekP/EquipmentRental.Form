@@ -67,11 +67,12 @@ export class EquipmentRentalFormComponent implements OnInit {
   isSubmitting = signal(false);
   priceResult = signal<CalculatePriceResponse | null>(null);
   isPriceLoading = signal(false);
+  isEquipmentLoading = signal(true);
 
   ngOnInit(): void {
     this.initializeForm();
     this.setDefaultDates();
-    this.setupStateSync();
+    this.loadEquipmentItems();
   }
 
   private initializeForm(): void {
@@ -86,15 +87,35 @@ export class EquipmentRentalFormComponent implements OnInit {
       pickupHour: ['16:00', Validators.required],
       returnDate: ['', Validators.required],
       returnHour: ['16:00', Validators.required],
-      equipment: this.fb.array(
-        this.settings.equipmentItems.map(() =>
-          this.fb.group({
-            quantity: [0, [Validators.min(0)]],
-            notes: ['']
-          })
-        )
-      )
+      equipment: this.fb.array([])
     });
+  }
+
+  private loadEquipmentItems(): void {
+    this.settings.loadEquipmentItems()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (items) => {
+          this.replaceEquipmentControls(items.length);
+          this.setupStateSync();
+          this.isEquipmentLoading.set(false);
+        },
+        error: () => {
+          this.isEquipmentLoading.set(false);
+          this.showFeedback('Nie udało się pobrać listy sprzętu. Odśwież stronę i spróbuj ponownie.', 'error');
+        }
+      });
+  }
+
+  private replaceEquipmentControls(itemsCount: number): void {
+    const equipmentControls = Array.from({ length: itemsCount }, () =>
+      this.fb.group({
+        quantity: [0, [Validators.min(0)]],
+        notes: ['']
+      })
+    );
+
+    this.rentalForm.setControl('equipment', this.fb.array(equipmentControls));
   }
 
   get equipmentArray(): FormArray {
@@ -198,12 +219,12 @@ export class EquipmentRentalFormComponent implements OnInit {
 
     const items = this.equipmentArray.controls
       .map((control, index) => ({
-        category: this.settings.equipmentItems[index].category,
+        categoryId: this.settings.equipmentItems[index].id,
         amount: (control.get('quantity')?.value ?? 0) as number,
       }))
-      .filter(item => item.amount > 0 && item.category !== null)
+      .filter(item => item.amount > 0 && item.categoryId !== null)
       .map(item => ({
-        category: EquipmentCategory[item.category as EquipmentCategory],
+        categoryId: item.categoryId,
         amount: item.amount,
       }));
 
