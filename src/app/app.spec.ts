@@ -19,6 +19,7 @@ describe('App', () => {
   };
 
   beforeEach(async () => {
+    localStorage.removeItem('equipmentSettings');
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
