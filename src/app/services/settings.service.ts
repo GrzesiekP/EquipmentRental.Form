@@ -62,7 +62,7 @@ export class SettingsService {
       return of(cachedItems);
     }
 
-    return this.http.get<EquipmentSettingsApiResponseItem[]>(`${this.apiUrl}/equipment/equipment-config`).pipe(
+    return this.http.get<EquipmentSettingsApiResponseItem[]>(environment.equipmentConfigUrl).pipe(
       map(items => items.map(item => this.mapApiItemToEquipmentSetting(item))),
       tap(items => {
         this.equipmentItemsCache = items;
