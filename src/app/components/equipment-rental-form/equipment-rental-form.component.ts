@@ -17,7 +17,7 @@ import { Observable, catchError, debounceTime, merge, of, switchMap, tap } from 
 import { SettingsService, EquipmentCategory } from '../../services/settings.service';
 import { FormSubmissionService } from '../../services/form-submission.service';
 import { RentalFormStateService } from '../../services/rental-form-state.service';
-import { PriceCalculationService } from '../../services/price-calculation.service';
+import { PRICE_CALCULATION_SERVICE } from '../../services/price-calculation.token';
 import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.model';
 import { CalculatePriceRequest, CalculatePriceResponse } from '../../models/price-calculation.model';
 
@@ -56,7 +56,7 @@ export class EquipmentRentalFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private formSubmissionService = inject(FormSubmissionService);
   private formStateService = inject(RentalFormStateService);
-  private priceCalculationService = inject(PriceCalculationService);
+  private priceCalculationService = inject(PRICE_CALCULATION_SERVICE);
   private destroyRef = inject(DestroyRef);
   settings = inject(SettingsService);
 
