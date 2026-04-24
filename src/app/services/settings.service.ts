@@ -27,6 +27,7 @@ export interface EquipmentSetting {
   id: string;
   displayName: string;
   category: EquipmentCategory | null;
+  pricePerDay: number;
 }
 
 interface EquipmentSettingsApiResponseItem {
@@ -76,6 +77,7 @@ export class SettingsService {
       id: item.id,
       displayName: item.displayName,
       category: this.mapCategory(item.displayName),
+      pricePerDay: item.pricePerDay,
     };
   }
 
@@ -114,7 +116,12 @@ export class SettingsService {
         return [];
       }
 
-      return parsedValue.filter(item => !!item?.id && !!item?.displayName);
+      return parsedValue
+        .filter(item => !!item?.id && !!item?.displayName)
+        .map(item => ({
+          ...item,
+          pricePerDay: typeof item.pricePerDay === 'number' ? item.pricePerDay : 0,
+        }));
     } catch {
       return [];
     }
