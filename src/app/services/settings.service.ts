@@ -27,6 +27,7 @@ export interface EquipmentSetting {
   id: string;
   displayName: string;
   category: EquipmentCategory | null;
+  pricePerDay: number;
 }
 
 interface EquipmentSettingsApiResponseItem {
@@ -35,6 +36,13 @@ interface EquipmentSettingsApiResponseItem {
   deposit: number;
   displayName: string;
 }
+
+interface EquipmentSettingsCacheEnvelope {
+  cachedAt: number;
+  items: EquipmentSetting[];
+}
+
+const equipmentSettingsCacheTtlMs = 7 * 24 * 60 * 60 * 1000;
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +70,7 @@ export class SettingsService {
       return of(cachedItems);
     }
 
-    return this.http.get<EquipmentSettingsApiResponseItem[]>(`${this.apiUrl}/equipment/equipment-config`).pipe(
+    return this.http.get<EquipmentSettingsApiResponseItem[]>(environment.equipmentConfigUrl).pipe(
       map(items => items.map(item => this.mapApiItemToEquipmentSetting(item))),
       tap(items => {
         this.equipmentItemsCache = items;
@@ -76,6 +84,7 @@ export class SettingsService {
       id: item.id,
       displayName: item.displayName,
       category: this.mapCategory(item.displayName),
+      pricePerDay: item.pricePerDay,
     };
   }
 
@@ -104,23 +113,58 @@ export class SettingsService {
 
   private readEquipmentItemsFromStorage(): EquipmentSetting[] {
     try {
-      const rawValue = sessionStorage.getItem(this.equipmentSettingsStorageKey);
+      const rawValue = localStorage.getItem(this.equipmentSettingsStorageKey);
       if (!rawValue) {
         return [];
       }
 
-      const parsedValue = JSON.parse(rawValue) as EquipmentSetting[];
-      if (!Array.isArray(parsedValue)) {
+      const parsedValue = JSON.parse(rawValue) as unknown;
+      if (Array.isArray(parsedValue)) {
+        localStorage.removeItem(this.equipmentSettingsStorageKey);
         return [];
       }
 
-      return parsedValue.filter(item => !!item?.id && !!item?.displayName);
+      if (!this.isEquipmentSettingsCacheEnvelope(parsedValue)) {
+        localStorage.removeItem(this.equipmentSettingsStorageKey);
+        return [];
+      }
+
+      if (Date.now() - parsedValue.cachedAt > equipmentSettingsCacheTtlMs) {
+        localStorage.removeItem(this.equipmentSettingsStorageKey);
+        return [];
+      }
+
+      return parsedValue.items
+        .filter(item => !!item?.id && !!item?.displayName)
+        .map(item => ({
+          ...item,
+          pricePerDay: typeof item.pricePerDay === 'number' ? item.pricePerDay : 0,
+        }));
     } catch {
       return [];
     }
   }
 
+  private isEquipmentSettingsCacheEnvelope(
+    value: unknown,
+  ): value is EquipmentSettingsCacheEnvelope {
+    if (typeof value !== 'object' || value === null) {
+      return false;
+    }
+
+    const envelope = value as EquipmentSettingsCacheEnvelope;
+    return (
+      typeof envelope.cachedAt === 'number' &&
+      Array.isArray(envelope.items) &&
+      !Number.isNaN(envelope.cachedAt)
+    );
+  }
+
   private saveEquipmentItemsToStorage(items: EquipmentSetting[]): void {
-    sessionStorage.setItem(this.equipmentSettingsStorageKey, JSON.stringify(items));
+    const envelope: EquipmentSettingsCacheEnvelope = {
+      cachedAt: Date.now(),
+      items,
+    };
+    localStorage.setItem(this.equipmentSettingsStorageKey, JSON.stringify(envelope));
   }
 }
