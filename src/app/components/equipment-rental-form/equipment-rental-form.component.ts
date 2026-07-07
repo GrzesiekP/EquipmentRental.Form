@@ -21,6 +21,8 @@ import { PRICE_CALCULATION_SERVICE } from '../../services/price-calculation.toke
 import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.model';
 import { CalculatePriceRequest, CalculatePriceResponse } from '../../models/price-calculation.model';
 
+const PROMO_CODE_PATTERN = /^[A-Za-z0-9]{10}$/;
+
 @Component({
   selector: 'app-equipment-rental-form',
   imports: [
@@ -87,6 +89,7 @@ export class EquipmentRentalFormComponent implements OnInit {
       pickupHour: ['16:00', Validators.required],
       returnDate: ['', Validators.required],
       returnHour: ['16:00', Validators.required],
+      promoCode: ['', [Validators.pattern(PROMO_CODE_PATTERN)]],
       equipment: this.fb.array([])
     });
   }
@@ -161,7 +164,8 @@ export class EquipmentRentalFormComponent implements OnInit {
       this.rentalForm.get('pickupDate')!.valueChanges,
       this.rentalForm.get('returnDate')!.valueChanges,
       this.rentalForm.get('pickupHour')!.valueChanges,
-      this.rentalForm.get('returnHour')!.valueChanges
+      this.rentalForm.get('returnHour')!.valueChanges,
+      this.rentalForm.get('promoCode')!.valueChanges
     )
       .pipe(
         debounceTime(500),
@@ -232,7 +236,15 @@ export class EquipmentRentalFormComponent implements OnInit {
       return null;
     }
 
-    return { items, startDate, endDate };
+    const request: CalculatePriceRequest = { items, startDate, endDate };
+    const promoCode = (this.rentalForm.get('promoCode')?.value ?? '').trim();
+    const promoControl = this.rentalForm.get('promoCode');
+
+    if (promoCode && promoControl?.valid) {
+      request.PromoCode = promoCode;
+    }
+
+    return request;
   }
 
   private combineDateAndTime(date: Date | string | null, time: Date | string | null): string | null {

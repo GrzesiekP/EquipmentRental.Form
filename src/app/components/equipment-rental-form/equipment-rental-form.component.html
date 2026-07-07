@@ -197,6 +197,24 @@
           </mat-card-content>
         </mat-card>
 
+        <!-- Promo Code Section -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>Kod zniżkowy</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Kod zniżkowy</mat-label>
+                <input matInput formControlName="promoCode" maxlength="10" autocomplete="off" inputmode="text">
+                @if (rentalForm.get('promoCode')?.hasError('pattern')) {
+                  <mat-error>Kod musi składać się z dokładnie 10 znaków alfanumerycznych</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
         <!-- Price Section -->
         @if (isPriceLoading() || priceResult()) {
           <mat-accordion class="section-accordion">

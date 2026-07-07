@@ -7,6 +7,7 @@ export interface CalculatePriceRequest {
   items: PriceCalculationItem[];
   startDate: string;
   endDate: string;
+  PromoCode?: string;
 }
 
 export interface CalculatePriceResponse {
