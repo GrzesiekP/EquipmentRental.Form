@@ -203,15 +203,45 @@
             <mat-card-title>Kod zniżkowy</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
+            <div class="promo-code-row">
+              <mat-form-field appearance="outline" class="promo-code-field" subscriptSizing="dynamic">
                 <mat-label>Kod zniżkowy</mat-label>
                 <input matInput formControlName="promoCode" maxlength="10" autocomplete="off" inputmode="text">
-                @if (rentalForm.get('promoCode')?.hasError('pattern')) {
-                  <mat-error>Kod musi składać się z dokładnie 10 znaków alfanumerycznych</mat-error>
+                @if (showPromoClearActions()) {
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    type="button"
+                    (click)="clearPromoCode()"
+                    aria-label="Usuń kod zniżkowy">
+                    <mat-icon>close</mat-icon>
+                  </button>
                 }
               </mat-form-field>
+
+              <div class="promo-apply-button-wrap">
+                <button
+                  mat-stroked-button
+                  type="button"
+                  class="promo-apply-button"
+                  [disabled]="!isPromoApplyEnabled()"
+                  (click)="applyPromoCode()">
+                  @if (isPromoCodeApplying()) {
+                    <mat-spinner diameter="18"></mat-spinner>
+                  } @else {
+                    Aplikuj kod
+                  }
+                </button>
+              </div>
             </div>
+
+            @if (appliedPromoCode()) {
+              <p class="promo-applied-message">Zastosowany kod: {{ appliedPromoCode()!.code }}</p>
+            }
+
+            @if (showPromoFormatHint()) {
+              <p class="promo-hint">Kod musi składać się z dokładnie 10 znaków alfanumerycznych</p>
+            }
           </mat-card-content>
         </mat-card>
 
@@ -233,6 +263,14 @@
               @if (priceResult()) {
                 <div class="price-breakdown">
                   <p class="price-total">Koszt całkowity {{ priceResult()!.totalAmount }} zł</p>
+                  @if (priceResult()!.promoCodeApplied) {
+                    <p class="price-promo-discount">
+                      Rabat z kodu zniżkowego
+                      @if (priceResult()!.promoCodeDiscountAmount !== null) {
+                        : -{{ priceResult()!.promoCodeDiscountAmount }} zł
+                      }
+                    </p>
+                  }
                   @if (priceResult()!.startExtraFee > 0 || priceResult()!.endExtraFee > 0) {
                     <p class="price-breakdown-label">w tym:</p>
                     @if (priceResult()!.startExtraFee > 0) {

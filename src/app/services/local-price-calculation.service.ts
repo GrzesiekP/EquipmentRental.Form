@@ -7,6 +7,8 @@ import { isOutsideBusinessHours } from './price/business-hours.util';
 import { outsideBusinessHoursFeePln } from './price/price-calculation.constants';
 import { calculateRentalDays } from './price/rental-days-calculator';
 
+import { applyPromoCodeDiscount } from './price/promo-code-discount.calculator';
+
 @Injectable()
 export class LocalPriceCalculationService implements IPriceCalculationService {
   private readonly settings = inject(SettingsService);
@@ -36,13 +38,16 @@ export class LocalPriceCalculationService implements IPriceCalculationService {
 
     const startExtraFee = isOutsideBusinessHours(start) ? outsideBusinessHoursFeePln : 0;
     const endExtraFee = isOutsideBusinessHours(end) ? outsideBusinessHoursFeePln : 0;
-    const totalAmount = totalEquipmentPrice + startExtraFee + endExtraFee;
+    const subtotal = totalEquipmentPrice + startExtraFee + endExtraFee;
+    const promoResult = applyPromoCodeDiscount(subtotal, request.appliedPromoCode);
 
     return of({
-      totalAmount,
+      totalAmount: promoResult.totalAmount,
       startExtraFee,
       endExtraFee,
       weekendDiscount,
+      promoCodeApplied: promoResult.promoCodeApplied,
+      promoCodeDiscountAmount: promoResult.promoCodeDiscountAmount,
     });
   }
 
@@ -52,6 +57,8 @@ export class LocalPriceCalculationService implements IPriceCalculationService {
       startExtraFee: 0,
       endExtraFee: 0,
       weekendDiscount: false,
+      promoCodeApplied: false,
+      promoCodeDiscountAmount: null,
     };
   }
 }
