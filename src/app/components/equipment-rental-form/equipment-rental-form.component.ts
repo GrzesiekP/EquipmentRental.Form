@@ -494,7 +494,8 @@ export class EquipmentRentalFormComponent implements OnInit {
       returnDate: returnDate,
       pickupHour: this.formSubmissionService.formatTime(formValue.pickupHour),
       returnHour: this.formSubmissionService.formatTime(formValue.returnHour),
-      equipment: equipment
+      equipment: equipment,
+      promoCode: this.appliedPromoCode()?.code ?? null,
     };
   }
 
