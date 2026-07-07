@@ -15,6 +15,8 @@ describe('App', () => {
         startExtraFee: 0,
         endExtraFee: 0,
         weekendDiscount: false,
+        promoCodeApplied: false,
+        promoCodeDiscountAmount: null,
       }),
   };
 

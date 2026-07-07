@@ -17,4 +17,5 @@ export interface RentalFormData {
   pickupHour: string;
   returnHour: string;
   equipment: EquipmentItem[];
+  promoCode: string | null;
 }

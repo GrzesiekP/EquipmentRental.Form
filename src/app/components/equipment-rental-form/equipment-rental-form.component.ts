@@ -13,13 +13,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Observable, catchError, debounceTime, merge, of, switchMap, tap } from 'rxjs';
+import { EMPTY, Observable, catchError, debounceTime, finalize, merge, of, switchMap, tap } from 'rxjs';
 import { SettingsService, EquipmentCategory } from '../../services/settings.service';
 import { FormSubmissionService } from '../../services/form-submission.service';
 import { RentalFormStateService } from '../../services/rental-form-state.service';
 import { PRICE_CALCULATION_SERVICE } from '../../services/price-calculation.token';
+import { PromoCodeService } from '../../services/promo-code.service';
 import { RentalFormData, EquipmentItem } from '../../models/equipment-rental.model';
 import { CalculatePriceRequest, CalculatePriceResponse } from '../../models/price-calculation.model';
+import { PromoCodeDetails } from '../../models/promo-code.model';
+
+const PROMO_CODE_PATTERN = /^[A-Za-z0-9]{10}$/;
 
 @Component({
   selector: 'app-equipment-rental-form',
@@ -57,6 +61,7 @@ export class EquipmentRentalFormComponent implements OnInit {
   private formSubmissionService = inject(FormSubmissionService);
   private formStateService = inject(RentalFormStateService);
   private priceCalculationService = inject(PRICE_CALCULATION_SERVICE);
+  private promoCodeService = inject(PromoCodeService);
   private destroyRef = inject(DestroyRef);
   settings = inject(SettingsService);
 
@@ -68,6 +73,8 @@ export class EquipmentRentalFormComponent implements OnInit {
   priceResult = signal<CalculatePriceResponse | null>(null);
   isPriceLoading = signal(false);
   isEquipmentLoading = signal(true);
+  appliedPromoCode = signal<PromoCodeDetails | null>(null);
+  isPromoCodeApplying = signal(false);
 
   ngOnInit(): void {
     this.initializeForm();
@@ -87,8 +94,35 @@ export class EquipmentRentalFormComponent implements OnInit {
       pickupHour: ['16:00', Validators.required],
       returnDate: ['', Validators.required],
       returnHour: ['16:00', Validators.required],
+      promoCode: [''],
       equipment: this.fb.array([])
     });
+  }
+
+  isPromoApplyEnabled(): boolean {
+    return PROMO_CODE_PATTERN.test(this.getTrimmedPromoCode()) && !this.isPromoCodeApplying();
+  }
+
+  showPromoClearActions(): boolean {
+    return !!this.getTrimmedPromoCode() || !!this.appliedPromoCode();
+  }
+
+  showPromoFormatHint(): boolean {
+    const code = this.getTrimmedPromoCode();
+    return !!code && !PROMO_CODE_PATTERN.test(code);
+  }
+
+  getTrimmedPromoCode(): string {
+    return (this.rentalForm.get('promoCode')?.value ?? '').trim();
+  }
+
+  private restoreAppliedPromoCodeInput(): void {
+    const applied = this.appliedPromoCode();
+    if (!applied) {
+      return;
+    }
+
+    this.rentalForm.patchValue({ promoCode: applied.code }, { emitEvent: false });
   }
 
   private loadEquipmentItems(): void {
@@ -170,10 +204,88 @@ export class EquipmentRentalFormComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(result => {
-        this.isPriceLoading.set(false);
-        this.priceResult.set(result);
-        this.formStateService.updatePrice(result);
+        this.applyPriceResult(result);
       });
+
+    this.rentalForm
+      .get('promoCode')!
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(value => {
+        if ((value ?? '').trim()) {
+          return;
+        }
+
+        this.clearAppliedPromo(true);
+      });
+  }
+
+  applyPromoCode(): void {
+    const code = this.getTrimmedPromoCode().toUpperCase();
+    if (!PROMO_CODE_PATTERN.test(code)) {
+      return;
+    }
+
+    this.isPromoCodeApplying.set(true);
+    this.promoCodeService
+      .resolvePromoCode(code)
+      .pipe(
+        switchMap(details => {
+          if (!details) {
+            this.showFeedback('Nieprawidłowy kod zniżkowy', 'error');
+            this.restoreAppliedPromoCodeInput();
+            return EMPTY;
+          }
+
+          this.appliedPromoCode.set(details);
+          this.rentalForm.patchValue({ promoCode: details.code }, { emitEvent: false });
+          this.isPriceLoading.set(true);
+          return this.fetchPrice();
+        }),
+        catchError(() => {
+          this.showFeedback('Nie udało się zweryfikować kodu zniżkowego', 'error');
+          this.restoreAppliedPromoCodeInput();
+          return EMPTY;
+        }),
+        finalize(() => this.isPromoCodeApplying.set(false))
+      )
+      .subscribe(result => {
+        this.applyPriceResult(result);
+      });
+  }
+
+  clearPromoCode(): void {
+    this.rentalForm.patchValue({ promoCode: '' }, { emitEvent: false });
+    this.clearAppliedPromo(true);
+  }
+
+  private clearAppliedPromo(recalculate: boolean): void {
+    const applied = this.appliedPromoCode();
+    if (applied) {
+      this.promoCodeService.removeFromCache(applied.code);
+    }
+
+    this.appliedPromoCode.set(null);
+
+    if (!recalculate) {
+      return;
+    }
+
+    const request = this.buildPriceRequest();
+    if (!request) {
+      this.applyPriceResult(null);
+      return;
+    }
+
+    this.isPriceLoading.set(true);
+    this.fetchPrice().subscribe(result => {
+      this.applyPriceResult(result);
+    });
+  }
+
+  private applyPriceResult(result: CalculatePriceResponse | null): void {
+    this.isPriceLoading.set(false);
+    this.priceResult.set(result);
+    this.formStateService.updatePrice(result);
   }
 
   private syncEquipmentState(): void {
@@ -232,7 +344,13 @@ export class EquipmentRentalFormComponent implements OnInit {
       return null;
     }
 
-    return { items, startDate, endDate };
+    const request: CalculatePriceRequest = { items, startDate, endDate };
+    const appliedPromoCode = this.appliedPromoCode();
+    if (appliedPromoCode) {
+      request.appliedPromoCode = appliedPromoCode;
+    }
+
+    return request;
   }
 
   private combineDateAndTime(date: Date | string | null, time: Date | string | null): string | null {
@@ -376,7 +494,8 @@ export class EquipmentRentalFormComponent implements OnInit {
       returnDate: returnDate,
       pickupHour: this.formSubmissionService.formatTime(formValue.pickupHour),
       returnHour: this.formSubmissionService.formatTime(formValue.returnHour),
-      equipment: equipment
+      equipment: equipment,
+      promoCode: this.appliedPromoCode()?.code ?? null,
     };
   }
 
