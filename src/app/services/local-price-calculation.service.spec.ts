@@ -62,6 +62,20 @@ describe('LocalPriceCalculationService', () => {
     expect(result.totalAmount).toBe(25 + outsideBusinessHoursFeePln);
   });
 
+  it('adds outside-hours fee when pickup and return fall on Saturday and Sunday', async () => {
+    const result = await firstValueFrom(
+      service.calculatePrice({
+        items: [{ categoryId: 'cat-kask', amount: 1 }],
+        startDate: '2026-08-15T10:00:00',
+        endDate: '2026-08-16T10:00:00',
+      }),
+    );
+
+    expect(result.startExtraFee).toBe(outsideBusinessHoursFeePln);
+    expect(result.endExtraFee).toBe(outsideBusinessHoursFeePln);
+    expect(result.totalAmount).toBe(25 + outsideBusinessHoursFeePln * 2);
+  });
+
   it('applies cached promo code discount to calculated total', async () => {
     const result = await firstValueFrom(
       service.calculatePrice({
