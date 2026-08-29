@@ -354,6 +354,11 @@ export class EquipmentRentalFormComponent implements OnInit {
   }
 
   private combineDateAndTime(date: Date | string | null, time: Date | string | null): string | null {
+    const dateObj = this.toCombinedDate(date, time);
+    return dateObj ? this.formatDateTimeLocal(dateObj) : null;
+  }
+
+  private toCombinedDate(date: Date | string | null, time: Date | string | null): Date | null {
     if (!date || !time) {
       return null;
     }
@@ -373,7 +378,7 @@ export class EquipmentRentalFormComponent implements OnInit {
       dateObj.setHours(parseInt(match[1], 10), parseInt(match[2], 10), 0, 0);
     }
 
-    return this.formatDateTimeLocal(dateObj);
+    return dateObj;
   }
 
   private formatDateTimeLocal(date: Date): string {
@@ -415,24 +420,21 @@ export class EquipmentRentalFormComponent implements OnInit {
       return;
     }
 
-    // Validate dates
-    const pickupDate = this.rentalForm.value.pickupDate instanceof Date
-      ? this.rentalForm.value.pickupDate
-      : new Date(this.rentalForm.value.pickupDate);
-    const returnDate = this.rentalForm.value.returnDate instanceof Date
-      ? this.rentalForm.value.returnDate
-      : new Date(this.rentalForm.value.returnDate);
+    const { pickupDate, returnDate, pickupHour, returnHour } = this.rentalForm.value;
+    const pickupDateTime = this.toCombinedDate(pickupDate, pickupHour);
+    const returnDateTime = this.toCombinedDate(returnDate, returnHour);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    pickupDate.setHours(0, 0, 0, 0);
-    returnDate.setHours(0, 0, 0, 0);
 
-    if (pickupDate < today) {
+    const pickupDay = pickupDateTime ? new Date(pickupDateTime) : null;
+    pickupDay?.setHours(0, 0, 0, 0);
+
+    if (pickupDay && pickupDay < today) {
       this.showFeedback('Data odbioru nie może być w przeszłości', 'error');
       return;
     }
 
-    if (returnDate <= pickupDate) {
+    if (!pickupDateTime || !returnDateTime || returnDateTime <= pickupDateTime) {
       this.showFeedback('Data zwrotu musi być późniejsza niż data odbioru', 'error');
       return;
     }
