@@ -27,9 +27,6 @@ describe('calculateRentalDays', () => {
   it('subtracts one day when exactly one full weekend qualifies', () => {
     const cases: [string, string, number][] = [
       ['2024-01-05', '2024-01-08', 2],
-      ['2024-01-04', '2024-01-08', 3],
-      ['2024-01-03', '2024-01-08', 4],
-      ['2024-01-06', '2024-01-09', 2],
     ];
     for (const [startStr, endStr, expectedDays] of cases) {
       const start = new Date(`${startStr}T12:00:00`);
@@ -37,6 +34,22 @@ describe('calculateRentalDays', () => {
       const result = calculateRentalDays(start, end);
       expect(result.rentalDays).toBe(expectedDays);
       expect(result.weekendDiscount).toBeTrue();
+    }
+  });
+
+  it('does not apply discount when weekend included but start not at friday or end not at monday', () => {
+    const cases: [string, string, number][] = [
+      ['2024-01-04', '2024-01-08', 4],
+      ['2024-01-05', '2024-01-09', 4],
+      ['2024-01-06', '2024-01-10', 4],
+      ['2024-01-03', '2024-01-07', 4],
+    ];
+    for (const [startStr, endStr, expectedDays] of cases) {
+      const start = new Date(`${startStr}T12:00:00`);
+      const end = new Date(`${endStr}T12:00:00`);
+      const result = calculateRentalDays(start, end);
+      expect(result.rentalDays).toBe(expectedDays);
+      expect(result.weekendDiscount).toBeFalse();
     }
   });
 
