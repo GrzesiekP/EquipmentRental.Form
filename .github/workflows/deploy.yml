@@ -59,7 +59,7 @@ jobs:
         run: npm ci
 
       - name: Run integration tests
-        run: npm run integration-test -- --watch=false --no-progress
+        run: npm run integration-test -- --watch=false --no-progress --browsers=ChromeHeadless
 
   build:
     name: Build
