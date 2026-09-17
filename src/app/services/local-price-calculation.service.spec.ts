@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { DiscountType } from '../models/promo-code.model';
 import { EquipmentCategory, EquipmentSetting, SettingsService } from './settings.service';
 import { LocalPriceCalculationService } from './local-price-calculation.service';
 import { outsideBusinessHoursFeePln } from './price/price-calculation.constants';
+import { RentalDaysCalculator } from './price/rental-days-calculator';
 
 describe('LocalPriceCalculationService', () => {
   let service: LocalPriceCalculationService;
@@ -25,6 +26,12 @@ describe('LocalPriceCalculationService', () => {
       providers: [
         LocalPriceCalculationService,
         { provide: SettingsService, useValue: settingsStub },
+        {
+          provide: RentalDaysCalculator,
+          useValue: {
+            calculateRentalDays: () => of({ rentalDays: 1, weekendDiscount: false }),
+          },
+        },
       ],
     });
 

@@ -1,18 +1,43 @@
-import { calendarDaySpanDays } from './calendar-days.util';
-import { countWeekendDiscountDays } from './weekend-discount-calculator';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
-export function calculateRentalDays(
-  start: Date,
-  end: Date,
-): { rentalDays: number; weekendDiscount: boolean } {
-  const baseDays = calendarDaySpanDays(start, end);
-  if (baseDays === 0) {
-    return { rentalDays: 1, weekendDiscount: false };
+interface RentalPeriodApiResponse {
+  rentalDays: number;
+  weekendDiscountApplied: boolean;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class RentalDaysCalculator {
+  private readonly http = inject(HttpClient);
+
+  calculateRentalDays(
+    start: Date,
+    end: Date,
+  ): Observable<{ rentalDays: number; weekendDiscount: boolean }> {
+    return this.http
+      .get<RentalPeriodApiResponse>(environment.rentalPeriodCalculatorUrl, {
+        params: {
+          PickupDate: toLocalIsoDate(start),
+          ReturnDate: toLocalIsoDate(end),
+        },
+      })
+      .pipe(
+        map(response => ({
+          rentalDays: response.rentalDays,
+          weekendDiscount: response.weekendDiscountApplied,
+        })),
+      );
   }
+}
 
-  const weekendDeduction = countWeekendDiscountDays(start, end);
-  return {
-    rentalDays: baseDays - weekendDeduction,
-    weekendDiscount: weekendDeduction > 0,
-  };
+function toLocalIsoDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
