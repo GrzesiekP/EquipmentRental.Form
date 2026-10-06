@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { EquipmentRentalFormComponent } from './equipment-rental-form.component';
 import { FormSubmissionService } from '../../services/form-submission.service';
@@ -136,6 +137,25 @@ describe('EquipmentRentalFormComponent date validation', () => {
     });
   });
 
+  it('onSubmit_DoesNotSubmit_WhenConsentIsNotSelected', () => {
+    // Arrange
+    setRentalPeriod(component, {
+      pickupDayOffset: 1,
+      pickupHour: '10:00',
+      returnDayOffset: 1,
+      returnHour: '18:00',
+    });
+    component.rentalForm.patchValue({ consent: false });
+
+    // Act
+    component.onSubmit();
+
+    // Assert
+    expect(formSubmissionServiceMock.submitForm).not.toHaveBeenCalled();
+    expect(component.showSuccess()).toBeFalse();
+    expect(component.isConsentAccepted()).toBeFalse();
+  });
+
   it('onSubmit_ShowsPastPickupError_WhenPickupDateIsBeforeToday', () => {
     // Arrange
     setRentalPeriod(component, {
@@ -155,6 +175,80 @@ describe('EquipmentRentalFormComponent date validation', () => {
   });
 });
 
+describe('EquipmentRentalFormComponent submit button', () => {
+  let component: EquipmentRentalFormComponent;
+  let fixture: ReturnType<typeof TestBed.createComponent<EquipmentRentalFormComponent>>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [EquipmentRentalFormComponent],
+      providers: [
+        provideNoopAnimations(),
+        RentalFormStateService,
+        {
+          provide: FormSubmissionService,
+          useValue: {
+            submitForm: () => of({}),
+            formatSubmitDate: () => '2026-08-30 12:00:00',
+            formatTime: (time: string | Date) => (typeof time === 'string' ? `${time}:00` : '16:00:00'),
+          },
+        },
+        {
+          provide: SettingsService,
+          useValue: {
+            equipmentItems,
+            loadEquipmentItems: () => of(equipmentItems),
+          },
+        },
+        {
+          provide: PRICE_CALCULATION_SERVICE,
+          useValue: { calculatePrice: () => of(null) },
+        },
+        {
+          provide: PromoCodeService,
+          useValue: { resolvePromoCode: () => of(null), removeFromCache: () => undefined },
+        },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(EquipmentRentalFormComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('submitButton_IsInactive_WhenConsentIsNotSelected', () => {
+    // Arrange
+    const submitButton = submitButtonElement(fixture);
+
+    // Assert
+    expect(submitButton.disabled).toBeTrue();
+    expect(component.isConsentAccepted()).toBeFalse();
+  });
+
+  it('submitButton_IsActive_WhenConsentIsSelected', () => {
+    // Arrange
+    component.rentalForm.patchValue({ consent: true });
+
+    // Act
+    fixture.detectChanges();
+
+    // Assert
+    expect(submitButtonElement(fixture).disabled).toBeFalse();
+    expect(component.isConsentAccepted()).toBeTrue();
+  });
+});
+
+function submitButtonElement(
+  fixture: ReturnType<typeof TestBed.createComponent<EquipmentRentalFormComponent>>,
+): HTMLButtonElement {
+  const button = fixture.nativeElement.querySelector('button[type="submit"]');
+  if (!button) {
+    throw new Error('Submit button was not rendered');
+  }
+
+  return button;
+}
+
 function fillRequiredPersonalFields(component: EquipmentRentalFormComponent): void {
   component.rentalForm.patchValue({
     name: 'Jan',
@@ -163,6 +257,7 @@ function fillRequiredPersonalFields(component: EquipmentRentalFormComponent): vo
     phone: '123456789',
     email: 'jan@example.com',
     address: 'Kraków',
+    consent: true,
   });
 }
 
