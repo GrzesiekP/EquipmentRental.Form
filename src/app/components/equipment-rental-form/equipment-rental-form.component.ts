@@ -11,6 +11,7 @@ import { MAT_TIMEPICKER_CONFIG, MatTimepickerModule } from '@angular/material/ti
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EMPTY, Observable, catchError, debounceTime, finalize, merge, of, switchMap, tap } from 'rxjs';
@@ -39,6 +40,7 @@ const PROMO_CODE_PATTERN = /^[A-Za-z0-9]{10}$/;
     MatTableModule,
     MatIconModule,
     MatCardModule,
+    MatCheckbox,
     MatExpansionModule,
     MatProgressSpinnerModule,
   ],
@@ -75,6 +77,7 @@ export class EquipmentRentalFormComponent implements OnInit {
   isEquipmentLoading = signal(true);
   appliedPromoCode = signal<PromoCodeDetails | null>(null);
   isPromoCodeApplying = signal(false);
+  isConsentAccepted = signal(false);
 
   ngOnInit(): void {
     this.initializeForm();
@@ -95,8 +98,15 @@ export class EquipmentRentalFormComponent implements OnInit {
       returnDate: ['', Validators.required],
       returnHour: ['16:00', Validators.required],
       promoCode: [''],
-      equipment: this.fb.array([])
+      equipment: this.fb.array([]),
+      consent: [false, Validators.requiredTrue]
     });
+
+    const consentControl = this.rentalForm.get('consent')!;
+    this.isConsentAccepted.set(consentControl.value === true);
+    consentControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(accepted => this.isConsentAccepted.set(accepted === true));
   }
 
   isPromoApplyEnabled(): boolean {

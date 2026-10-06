@@ -10,6 +10,8 @@
         <mat-card-content>
           <p>Dzień dobry,</p>
           <p>w celu dokonania rezerwacji sprzętu proszę wypełnić poniższy formularz - są to dane potrzebne do zawarcia umowy wypożyczenia.</p>
+          <p>Dokonanie rezerwacji oznacza zgodę na <a href="https://kaukazwypozyczalnia.pl/regulamin" target="_blank" rel="noopener noreferrer">regulamin wypożyczalni</a>.</p>
+          <p>Informacje o przetwarzaniu danych osobowych: <a href="https://kaukazwypozyczalnia.pl/polityka-prywatnosci" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/polityka-prywatnosci</a></p>
           <p>Dostępny sprzęt i cennik: <a href="https://kaukazwypozyczalnia.pl/cennik" target="_blank" rel="noopener noreferrer">https://kaukazwypozyczalnia.pl/cennik</a></p>
           <p>Grzegorz Pawłowski,<br>Wypożyczalnia Kaukaz</p>
         </mat-card-content>
@@ -301,9 +303,17 @@
           </mat-card>
         }
 
+        <div class="consent-row">
+          <mat-checkbox formControlName="consent">
+            <span>
+              Akceptuję <a href="https://kaukazwypozyczalnia.pl/regulamin" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()">regulamin wypożyczalni</a> i <a href="https://kaukazwypozyczalnia.pl/polityka-prywatnosci" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()">politykę prywatności</a>.
+            </span>
+          </mat-checkbox>
+        </div>
+
         <!-- Submit Button -->
         <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting()">
+          <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting() || !isConsentAccepted()">
             {{ isSubmitting() ? 'Wysyłanie...' : 'Wyślij' }}
           </button>
         </div>
