@@ -4,8 +4,6 @@ import { map } from 'rxjs/operators';
 import { CalculatePriceRequest, CalculatePriceResponse } from '../models/price-calculation.model';
 import { IPriceCalculationService } from './price-calculation.token';
 import { SettingsService } from './settings.service';
-import { isOutsideBusinessHours } from './price/business-hours.util';
-import { outsideBusinessHoursFeePln } from './price/price-calculation.constants';
 import { RentalDaysCalculator } from './price/rental-days-calculator';
 
 import { applyPromoCodeDiscount } from './price/promo-code-discount.calculator';
@@ -39,15 +37,10 @@ export class LocalPriceCalculationService implements IPriceCalculationService {
           totalEquipmentPrice += pricePerDay * line.amount * rentalDays;
         }
 
-        const startExtraFee = isOutsideBusinessHours(start) ? outsideBusinessHoursFeePln : 0;
-        const endExtraFee = isOutsideBusinessHours(end) ? outsideBusinessHoursFeePln : 0;
-        const subtotal = totalEquipmentPrice + startExtraFee + endExtraFee;
-        const promoResult = applyPromoCodeDiscount(subtotal, request.appliedPromoCode);
+        const promoResult = applyPromoCodeDiscount(totalEquipmentPrice, request.appliedPromoCode);
 
         return {
           totalAmount: promoResult.totalAmount,
-          startExtraFee,
-          endExtraFee,
           weekendDiscount,
           promoCodeApplied: promoResult.promoCodeApplied,
           promoCodeDiscountAmount: promoResult.promoCodeDiscountAmount,
@@ -59,8 +52,6 @@ export class LocalPriceCalculationService implements IPriceCalculationService {
   private emptyResponse(): CalculatePriceResponse {
     return {
       totalAmount: 0,
-      startExtraFee: 0,
-      endExtraFee: 0,
       weekendDiscount: false,
       promoCodeApplied: false,
       promoCodeDiscountAmount: null,

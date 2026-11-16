@@ -14,8 +14,6 @@ export interface CalculatePriceRequest {
 
 export interface CalculatePriceResponse {
   totalAmount: number;
-  startExtraFee: number;
-  endExtraFee: number;
   weekendDiscount: boolean;
   promoCodeApplied: boolean;
   promoCodeDiscountAmount: number | null;

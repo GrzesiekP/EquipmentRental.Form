@@ -273,21 +273,6 @@
                       }
                     </p>
                   }
-                  @if (priceResult()!.startExtraFee > 0 || priceResult()!.endExtraFee > 0) {
-                    <p class="price-breakdown-label">w tym:</p>
-                    @if (priceResult()!.startExtraFee > 0) {
-                      <p class="price-extra-fee">
-                        Opłata dodatkowa za wypożyczenie poza standardowymi godzinami:
-                        {{ priceResult()!.startExtraFee }} zł
-                      </p>
-                    }
-                    @if (priceResult()!.endExtraFee > 0) {
-                      <p class="price-extra-fee">
-                        Opłata dodatkowa za zwrot poza standardowymi godzinami:
-                        {{ priceResult()!.endExtraFee }} zł
-                      </p>
-                    }
-                  }
                 </div>
               }
             </mat-expansion-panel>
