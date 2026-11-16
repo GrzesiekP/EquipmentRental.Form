@@ -447,16 +447,6 @@ footer {
     margin: 0 0 8px;
 }
 
-.price-breakdown-label {
-    margin: 4px 0;
-    color: rgba(0, 0, 0, 0.6);
-}
-
-.price-extra-fee {
-    margin: 4px 0 4px 16px;
-    color: rgba(0, 0, 0, 0.7);
-}
-
 .floating-total-bar {
     position: fixed;
     left: 50%;

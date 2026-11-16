@@ -12,8 +12,6 @@ describe('App', () => {
     calculatePrice: () =>
       of<CalculatePriceResponse>({
         totalAmount: 0,
-        startExtraFee: 0,
-        endExtraFee: 0,
         weekendDiscount: false,
         promoCodeApplied: false,
         promoCodeDiscountAmount: null,

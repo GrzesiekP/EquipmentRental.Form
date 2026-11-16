@@ -3,7 +3,6 @@ import { firstValueFrom, of } from 'rxjs';
 import { DiscountType } from '../models/promo-code.model';
 import { EquipmentCategory, EquipmentSetting, SettingsService } from './settings.service';
 import { LocalPriceCalculationService } from './local-price-calculation.service';
-import { outsideBusinessHoursFeePln } from './price/price-calculation.constants';
 import { RentalDaysCalculator } from './price/rental-days-calculator';
 
 describe('LocalPriceCalculationService', () => {
@@ -48,14 +47,12 @@ describe('LocalPriceCalculationService', () => {
     );
 
     expect(result.totalAmount).toBe(50);
-    expect(result.startExtraFee).toBe(0);
-    expect(result.endExtraFee).toBe(0);
     expect(result.weekendDiscount).toBeFalse();
     expect(result.promoCodeApplied).toBeFalse();
     expect(result.promoCodeDiscountAmount).toBeNull();
   });
 
-  it('adds outside-hours fee per boundary that is outside 08–18', async () => {
+  it('does not add fees for pickup or return outside standard hours', async () => {
     const result = await firstValueFrom(
       service.calculatePrice({
         items: [{ categoryId: 'cat-kask', amount: 1 }],
@@ -64,12 +61,10 @@ describe('LocalPriceCalculationService', () => {
       }),
     );
 
-    expect(result.startExtraFee).toBe(outsideBusinessHoursFeePln);
-    expect(result.endExtraFee).toBe(0);
-    expect(result.totalAmount).toBe(25 + outsideBusinessHoursFeePln);
+    expect(result.totalAmount).toBe(25);
   });
 
-  it('adds outside-hours fee when pickup and return fall on Saturday and Sunday', async () => {
+  it('does not add fees for pickup and return on a weekend', async () => {
     const result = await firstValueFrom(
       service.calculatePrice({
         items: [{ categoryId: 'cat-kask', amount: 1 }],
@@ -78,9 +73,7 @@ describe('LocalPriceCalculationService', () => {
       }),
     );
 
-    expect(result.startExtraFee).toBe(outsideBusinessHoursFeePln);
-    expect(result.endExtraFee).toBe(outsideBusinessHoursFeePln);
-    expect(result.totalAmount).toBe(25 + outsideBusinessHoursFeePln * 2);
+    expect(result.totalAmount).toBe(25);
   });
 
   it('applies cached promo code discount to calculated total', async () => {
