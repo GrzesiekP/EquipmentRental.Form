@@ -31,7 +31,6 @@
     "@angular/platform-browser": "^21.2.19",
     "@angular/router": "^21.2.19",
     "material-icons": "^1.13.14",
-    "puppeteer": "^24.6.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
