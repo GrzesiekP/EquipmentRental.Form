@@ -9,7 +9,7 @@
     "logLevel": "debug"
   },
   "/n8n": {
-    "target": "https://tantunergon8n.duckdns.org",
+    "target": "https://zasadnyosiem.mikrus.dev",
     "secure": true,
     "pathRewrite": {
       "^/n8n": ""
