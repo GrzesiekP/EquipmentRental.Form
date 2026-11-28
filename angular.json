@@ -57,6 +57,14 @@
               ],
               "outputHashing": "all"
             },
+            "test": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.test.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -73,6 +81,9 @@
           "configurations": {
             "production": {
               "buildTarget": "equipment-rental-angular:build:production"
+            },
+            "test": {
+              "buildTarget": "equipment-rental-angular:build:test"
             },
             "development": {
               "buildTarget": "equipment-rental-angular:build:development"
